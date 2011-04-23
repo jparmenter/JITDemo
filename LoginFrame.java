@@ -97,8 +97,8 @@ public class LoginFrame extends JFrame implements ActionListener
 			contentPane); 
 		layout.putConstraint(SpringLayout.NORTH ,closeBtn, (HEIGHT-75), SpringLayout.NORTH, 
 			contentPane);
-		layout.putConstraint(SpringLayout.WEST, closeBtn, (WIDTH-150), SpringLayout.WEST, 
-			contentPane);
+		layout.putConstraint(SpringLayout.EAST, closeBtn, -5, SpringLayout.WEST, 
+			loginBtn);
 	}
 
 	public void actionPerformed(ActionEvent e)
@@ -107,7 +107,10 @@ public class LoginFrame extends JFrame implements ActionListener
 
 		if (buttonString.equals("Login"))
 		{
-			errorLbl.setText("Error: ");	
+			dispose();
+			Menu gui = new Menu();
+			gui.setVisible(true);
+			//errorLbl.setText("Error: ");	
 		}
 		else
 		if (buttonString.equals("Close"))
