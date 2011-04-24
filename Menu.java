@@ -1,6 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.*;
 
 public class Menu extends JFrame implements ActionListener
 {
@@ -323,10 +324,48 @@ public class Menu extends JFrame implements ActionListener
 			"553355 CSE 120 Digital Design"};
 
 		JList classList = new JList(list);
-		JScrollPane pane = new JScrollPane(classList);
 		classList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		classList.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-		cPanel.add(classList);
+		classList.setLayoutOrientation(classList.VERTICAL);
+		classList.setVisibleRowCount(4);
+		classList.setSelectedIndex(-1);
+		JScrollPane pane = new JScrollPane(classList);
+		pane.setPreferredSize(new Dimension(300, 200));
+
+
+
+		MouseListener mouseListener = new MouseAdapter() {
+		      public void mouseClicked(MouseEvent mouseEvent) {
+			JList theList = (JList) mouseEvent.getSource();
+			if (mouseEvent.getClickCount() == 2) {
+			  int index = theList.locationToIndex(mouseEvent.getPoint());
+			  if (index >= 0) {
+			    Object o = theList.getModel().getElementAt(index);
+			    char [] input = o.toString().toCharArray();
+			    int i = 0;
+			    char c = input[i];
+			    String s = "";
+		
+			    while (Character.isDigit(c))
+			    {
+				s += c;
+				i++;
+				c = input[i];	
+			    }
+			  
+			    int id = Integer.parseInt(s);
+			    System.out.println("Double-clicked on: " + id);
+			  }
+			}
+		      }
+		};
+
+		classList.addMouseListener(mouseListener);
+
+		cPanel.add(pane);
+
+		JLabel insLbl = new JLabel("Double click a class to view");
+		cPanel.add(insLbl);
 
 		JButton logoutBtn = new JButton("Logout");
 		logoutBtn.addActionListener(this);
@@ -338,10 +377,17 @@ public class Menu extends JFrame implements ActionListener
 			cPanel); 
 
 		y += inc;
-	
-		layout.putConstraint(SpringLayout.WEST, classList, (((WIDTH/2)/2)-50), SpringLayout.WEST,
+
+		layout.putConstraint(SpringLayout.WEST, insLbl, (((WIDTH/2)/2)-50), SpringLayout.WEST,
 			cPanel);
-		layout.putConstraint(SpringLayout.NORTH, classList, y, SpringLayout.NORTH,
+		layout.putConstraint(SpringLayout.NORTH, insLbl, y, SpringLayout.NORTH,
+			cPanel);
+
+		y += 25;
+	
+		layout.putConstraint(SpringLayout.WEST, pane, (((WIDTH/2)/2)-50), SpringLayout.WEST,
+			cPanel);
+		layout.putConstraint(SpringLayout.NORTH, pane, y, SpringLayout.NORTH,
 			cPanel);
 
 		layout.putConstraint(SpringLayout.WEST, logoutBtn, (WIDTH-90), SpringLayout.WEST, 
