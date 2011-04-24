@@ -29,19 +29,19 @@ public class LoginFrame extends JFrame implements ActionListener
 		SpringLayout layout = new SpringLayout();
 		contentPane.setLayout(layout);
 
-		Component titleLbl = new JLabel("Login Screen");
+		JLabel titleLbl = new JLabel("Login Screen");
 		contentPane.add(titleLbl);	
 
-		Component idLbl = new JLabel("Id:");
+		JLabel idLbl = new JLabel("Id:");
 		contentPane.add(idLbl);		
 
-		Component idTxt = new JTextField("", 10);
+		JTextField idTxt = new JTextField("", 10);
 		contentPane.add(idTxt);	
 
-		Component passLbl = new JLabel("Password:");
+		JLabel passLbl = new JLabel("Password:");
 		contentPane.add(passLbl);
 
-		Component passTxt = new JPasswordField("", 10);	
+		JPasswordField passTxt = new JPasswordField("", 10);	
 		contentPane.add(passTxt);
 
 		errorLbl = new JLabel("");

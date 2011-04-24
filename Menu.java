@@ -5,7 +5,8 @@ import java.awt.event.*;
 public class Menu extends JFrame implements ActionListener
 {
 	public static int WIDTH = 600;
-	public static int HEIGHT = 500;
+	public static int HEIGHT = 400;
+	private JLabel errorLbl;
 
 	public Menu()
 	{
@@ -29,16 +30,18 @@ public class Menu extends JFrame implements ActionListener
 		JPanel hPanel = home();
 		JPanel cPanel = course();
 		JPanel aPanel = account();
-		JPanel createPanel = create();
+		JPanel cAccountPanel = create("Create Account");
+		JPanel cClassPanel = create("Create Class");
 
 		jTab.add("Home", hPanel);
 		jTab.add("Class View", cPanel);
 		jTab.add("Account View", aPanel);
-		jTab.add("Create View", createPanel); 
+		jTab.add("Create Account", cAccountPanel); 
+		jTab.add("Create Class", cClassPanel);
 
 	}
 
-	public JPanel create()
+	public JPanel create(String title)
 	{
 		JPanel createPanel = new JPanel();
 		SpringLayout layout = new SpringLayout();
@@ -48,7 +51,7 @@ public class Menu extends JFrame implements ActionListener
 		int y = 25;
 		int inc = 45;
 
-		JLabel createLbl = new JLabel("Create View");
+		JLabel createLbl = new JLabel(title);
 		createPanel.add(createLbl);
 
 		JButton logoutBtn = new JButton("Logout");
@@ -60,10 +63,146 @@ public class Menu extends JFrame implements ActionListener
 		layout.putConstraint(SpringLayout.NORTH, createLbl, y, SpringLayout.NORTH, 
 			createPanel); 
 
+		y += inc;
+
 		layout.putConstraint(SpringLayout.WEST, logoutBtn, (WIDTH-90), SpringLayout.WEST, 
 			createPanel);
 		layout.putConstraint(SpringLayout.NORTH, logoutBtn, (HEIGHT-110), SpringLayout.NORTH, 
 			createPanel); 
+
+
+		if (title.equals("Create Class"))
+		{
+			JLabel courseLbl = new JLabel("Course ID:");
+			createPanel.add(courseLbl);
+
+			JTextField courseTxt = new JTextField("", 10);
+			createPanel.add(courseTxt);
+
+			JLabel titleLbl = new JLabel("Course Title:");
+			createPanel.add(titleLbl);
+
+			JTextField titleTxt = new JTextField("", 10);
+			createPanel.add(titleTxt);
+
+			JLabel descLbl = new JLabel("Course Description:");
+			createPanel.add(descLbl);
+
+//			JTextArea descTxt = new JTextArea("", 5, 20, JTextArea.SCROLLBARS_VERTICAL_ONLY);
+			JTextArea descTxt = new JTextArea(5, 20);
+
+			descTxt.setWrapStyleWord(true);
+			descTxt.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+			createPanel.add(descTxt);
+
+			JButton createBtn = new JButton("Create Class");
+			createBtn.addActionListener(this);
+			createPanel.add(createBtn);
+
+			layout.putConstraint(SpringLayout.WEST, courseLbl, (((WIDTH/2)/2)-50), SpringLayout.WEST,
+				createPanel);
+			layout.putConstraint(SpringLayout.NORTH, courseLbl, y, SpringLayout.NORTH,
+				createPanel);
+			layout.putConstraint(SpringLayout.NORTH, courseTxt, y, SpringLayout.NORTH,
+				createPanel);
+			layout.putConstraint(SpringLayout.WEST, courseTxt, 20, SpringLayout.EAST,
+				courseLbl);	
+
+			y += inc;
+			
+			layout.putConstraint(SpringLayout.WEST, titleLbl, (((WIDTH/2)/2)-50), SpringLayout.WEST,
+				createPanel);
+			layout.putConstraint(SpringLayout.NORTH, titleLbl, y, SpringLayout.NORTH,
+				createPanel);
+			layout.putConstraint(SpringLayout.NORTH, titleTxt, y, SpringLayout.NORTH,
+				createPanel);
+			layout.putConstraint(SpringLayout.WEST, titleTxt, 20, SpringLayout.EAST,
+				titleLbl);	
+
+			y += inc;
+			
+			layout.putConstraint(SpringLayout.WEST, descLbl, (((WIDTH/2)/2)-50), SpringLayout.WEST,
+				createPanel);
+			layout.putConstraint(SpringLayout.NORTH, descLbl, y, SpringLayout.NORTH,
+				createPanel);
+			layout.putConstraint(SpringLayout.NORTH, descTxt, y, SpringLayout.NORTH,
+				createPanel);
+			layout.putConstraint(SpringLayout.WEST, descTxt, 20, SpringLayout.EAST,
+				descLbl);	
+
+			y += inc;
+
+			layout.putConstraint(SpringLayout.NORTH ,createBtn, (HEIGHT-110), SpringLayout.NORTH, 
+				createPanel);
+			layout.putConstraint(SpringLayout.EAST, createBtn, -5, SpringLayout.WEST, 
+				logoutBtn);
+			
+		}
+		else
+		{
+			JLabel nameLbl = new JLabel("Name:");
+			createPanel.add(nameLbl);	
+
+			JTextField nameTxt = new JTextField("", 10);	
+			createPanel.add(nameTxt);
+
+			String[] users = { "Admin", "Teacher", "Student"}; 
+
+			JComboBox userList = new JComboBox(users);
+			userList.setSelectedIndex(0);
+			userList.addActionListener(this);
+			createPanel.add(userList);
+
+			JLabel passLbl = new JLabel("Password:");
+			createPanel.add(passLbl);
+
+			JPasswordField passTxt = new JPasswordField("", 10);
+			createPanel.add(passTxt);
+
+			JButton createBtn = new JButton("Create Account");
+			createBtn.addActionListener(this);
+			createPanel.add(createBtn);
+
+			layout.putConstraint(SpringLayout.WEST, nameLbl, (((WIDTH/2)/2)-50), SpringLayout.WEST,
+				createPanel);
+			layout.putConstraint(SpringLayout.NORTH, nameLbl, y, SpringLayout.NORTH,
+				createPanel);
+			layout.putConstraint(SpringLayout.NORTH, nameTxt, y, SpringLayout.NORTH,
+				createPanel);
+			layout.putConstraint(SpringLayout.WEST, nameTxt, 20, SpringLayout.EAST,
+				nameLbl);
+			layout.putConstraint(SpringLayout.NORTH, userList, y, SpringLayout.NORTH,
+				createPanel);
+			layout.putConstraint(SpringLayout.WEST, userList, 20, SpringLayout.EAST,
+				nameTxt);
+
+			y += inc;
+
+			layout.putConstraint(SpringLayout.WEST, passLbl, (((WIDTH/2/2)-50)), SpringLayout.WEST,
+				createPanel);
+			layout.putConstraint(SpringLayout.NORTH, passLbl, y, SpringLayout.NORTH,
+				createPanel);
+			layout.putConstraint(SpringLayout.NORTH, passTxt, y, SpringLayout.NORTH,
+				createPanel);
+			layout.putConstraint(SpringLayout.WEST, passTxt, 20, SpringLayout.EAST,
+				passLbl);
+
+			y += inc;
+
+			layout.putConstraint(SpringLayout.NORTH ,createBtn, (HEIGHT-110), SpringLayout.NORTH, 
+				createPanel);
+			layout.putConstraint(SpringLayout.EAST, createBtn, -5, SpringLayout.WEST, 
+				logoutBtn);
+
+		}
+
+		errorLbl = new JLabel("");
+		createPanel.add(errorLbl);
+
+		layout.putConstraint(SpringLayout.WEST, errorLbl, ((WIDTH/2)-50), SpringLayout.WEST,
+			createPanel);
+		layout.putConstraint(SpringLayout.NORTH, errorLbl, y, SpringLayout.NORTH,
+			createPanel);
 
 		return createPanel;
 
@@ -82,6 +221,28 @@ public class Menu extends JFrame implements ActionListener
 		JLabel accountLbl = new JLabel("Account Mangement");
 		aPanel.add(accountLbl);
 
+		JLabel titleLbl = new JLabel("Change Pass");
+		aPanel.add(titleLbl);
+
+		JLabel cPassLbl = new JLabel("Current Password:");
+		aPanel.add(cPassLbl);	
+
+		JPasswordField cPassTxt = new JPasswordField("", 10);	
+		aPanel.add(cPassTxt);
+
+		JLabel nPassLbl = new JLabel("New Password:");
+		aPanel.add(nPassLbl);
+
+		JPasswordField nPassTxt = new JPasswordField("", 10);
+		aPanel.add(nPassTxt);
+	
+		errorLbl = new JLabel("");
+		aPanel.add(errorLbl);
+
+		JButton submitBtn = new JButton("Submit");
+		submitBtn.addActionListener(this);
+		aPanel.add(submitBtn);
+		
 		JButton logoutBtn = new JButton("Logout");
 		logoutBtn.addActionListener(this);
 		aPanel.add(logoutBtn);
@@ -91,10 +252,51 @@ public class Menu extends JFrame implements ActionListener
 		layout.putConstraint(SpringLayout.NORTH, accountLbl, y, SpringLayout.NORTH, 
 			aPanel); 
 
+		y += inc;
+
+		layout.putConstraint(SpringLayout.WEST, titleLbl, ((WIDTH/2)-50), SpringLayout.WEST,
+			aPanel);
+		layout.putConstraint(SpringLayout.NORTH, titleLbl, y, SpringLayout.NORTH,
+			aPanel);
+
+		y += inc;
+
+		layout.putConstraint(SpringLayout.WEST, cPassLbl, (((WIDTH/2)/2)-50), SpringLayout.WEST,
+			aPanel);
+		layout.putConstraint(SpringLayout.NORTH, cPassLbl, y, SpringLayout.NORTH,
+			aPanel);
+		layout.putConstraint(SpringLayout.NORTH, cPassTxt, y, SpringLayout.NORTH,
+			aPanel);
+		layout.putConstraint(SpringLayout.WEST, cPassTxt, 20, SpringLayout.EAST,
+			cPassLbl);
+
+		y += inc;
+
+		layout.putConstraint(SpringLayout.WEST, nPassLbl, (((WIDTH/2/2)-50)), SpringLayout.WEST,
+			aPanel);
+		layout.putConstraint(SpringLayout.NORTH, nPassLbl, y, SpringLayout.NORTH,
+			aPanel);
+		layout.putConstraint(SpringLayout.NORTH, nPassTxt, y, SpringLayout.NORTH,
+			aPanel);
+		layout.putConstraint(SpringLayout.WEST, nPassTxt, 20, SpringLayout.EAST,
+			nPassLbl);
+
+		y += inc;
+
+		layout.putConstraint(SpringLayout.WEST, errorLbl, ((WIDTH/2)-50), SpringLayout.WEST,
+			aPanel);
+		layout.putConstraint(SpringLayout.NORTH, errorLbl, y, SpringLayout.NORTH,
+			aPanel);
+
 		layout.putConstraint(SpringLayout.WEST, logoutBtn, (WIDTH-90), SpringLayout.WEST, 
 			aPanel);
 		layout.putConstraint(SpringLayout.NORTH, logoutBtn, (HEIGHT-110), SpringLayout.NORTH, 
-			aPanel); 
+			aPanel);
+		layout.putConstraint(SpringLayout.NORTH ,submitBtn, (HEIGHT-110), SpringLayout.NORTH, 
+			aPanel);
+		layout.putConstraint(SpringLayout.EAST, submitBtn, -5, SpringLayout.WEST, 
+			logoutBtn);
+ 
 
 		return aPanel;
 
@@ -113,6 +315,19 @@ public class Menu extends JFrame implements ActionListener
 		JLabel classLbl = new JLabel("Class Menu");
 		cPanel.add(classLbl);
 
+		String list[] = {"22722 CSE 340 Intro to Software Engineering",
+			"232424 CSE 205 Java Programming",
+			"235353 CSE 240 Into to PL",
+			"345454 CSE 310 Data Structs",
+			"334433 CSE 205 Java Programming",
+			"553355 CSE 120 Digital Design"};
+
+		JList classList = new JList(list);
+		JScrollPane pane = new JScrollPane(classList);
+		classList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		classList.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		cPanel.add(classList);
+
 		JButton logoutBtn = new JButton("Logout");
 		logoutBtn.addActionListener(this);
 		cPanel.add(logoutBtn);
@@ -122,11 +337,17 @@ public class Menu extends JFrame implements ActionListener
 		layout.putConstraint(SpringLayout.NORTH, classLbl, y, SpringLayout.NORTH, 
 			cPanel); 
 
+		y += inc;
+	
+		layout.putConstraint(SpringLayout.WEST, classList, (((WIDTH/2)/2)-50), SpringLayout.WEST,
+			cPanel);
+		layout.putConstraint(SpringLayout.NORTH, classList, y, SpringLayout.NORTH,
+			cPanel);
+
 		layout.putConstraint(SpringLayout.WEST, logoutBtn, (WIDTH-90), SpringLayout.WEST, 
 			cPanel);
 		layout.putConstraint(SpringLayout.NORTH, logoutBtn, (HEIGHT-110), SpringLayout.NORTH, 
 			cPanel); 
-
 
 		return cPanel;
 	}
@@ -169,7 +390,6 @@ public class Menu extends JFrame implements ActionListener
 			hPanel); 
 
 		return hPanel;
-	
 	}
 
 	public void actionPerformed(ActionEvent e)
@@ -181,7 +401,11 @@ public class Menu extends JFrame implements ActionListener
 			dispose();
 			LoginFrame gui = new LoginFrame();
 			gui.setVisible(true);
-			//errorLbl.setText("Error: ");	
+		}
+		else
+		if (buttonString.equals("Submit"))
+		{
+			errorLbl.setText("Error:");
 		}
 		else
 			System.out.println("Unexpected error.");	
