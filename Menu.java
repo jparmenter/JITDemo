@@ -2,21 +2,42 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.*;
+import javax.swing.event.*;
 
-public class Menu extends JFrame implements ActionListener
+public class Menu extends JFrame 
+	implements ActionListener
 {
 	public static int WIDTH = 600;
 	public static int HEIGHT = 400;
-	private JLabel errorLbl;
-	private final User curr;
 	public static jaklUtilities utility;
+
+	// Used for Errors!
+	private JLabel errorLbl;
+
+	// Used for changed Password
+	private JLabel aErrorLbl;
+	private JPasswordField cPassTxt;
+	private JPasswordField nPassTxt;
+	private final User curr;
+
+	// Used for create Accounts
+	private JTextField idTxt;
+	private JTextField nameTxt;
+	private JComboBox userList;
+	private JTextField passTxt;
+	private JLabel createAErrorLbl;
+
+	// Used for create Classes
+	private JTextField courseTxt;
+	private JTextField titleTxt;
+	private JTextArea descTxt;
+	private JLabel createCErrorLbl;
 
 	public Menu(User _curr)
 	{
 		super("Just In Time Teaching");
 		curr = _curr;
 		utility = new jaklUtilities();
-
 	
 		try
 		{
@@ -32,6 +53,14 @@ public class Menu extends JFrame implements ActionListener
 
 		JTabbedPane jTab = new JTabbedPane();
 		getContentPane().add(jTab);
+
+		/*jTab.addMouseListener(new MouseAdapter() {
+		      public void mouseClicked(MouseEvent mouseEvent) {
+			if (mouseEvent.getClickCount() == 1) {
+				tabChanged();
+			}
+		     }
+		});*/	
 
 		JPanel hPanel = home();
 		JPanel cPanel = course();
@@ -86,19 +115,19 @@ public class Menu extends JFrame implements ActionListener
 			JLabel courseLbl = new JLabel("Course ID:");
 			createPanel.add(courseLbl);
 
-			JTextField courseTxt = new JTextField("", 10);
+			courseTxt = new JTextField("", 10);
 			createPanel.add(courseTxt);
 
 			JLabel titleLbl = new JLabel("Course Title:");
 			createPanel.add(titleLbl);
 
-			JTextField titleTxt = new JTextField("", 10);
+			titleTxt = new JTextField("", 10);
 			createPanel.add(titleTxt);
 
 			JLabel descLbl = new JLabel("Course Description:");
 			createPanel.add(descLbl);
 
-			JTextArea descTxt = new JTextArea(5, 20);
+			descTxt = new JTextArea(5, 20);
 
 			descTxt.setWrapStyleWord(true);
 			descTxt.setBorder(BorderFactory.createLineBorder(Color.BLACK));
@@ -109,6 +138,9 @@ public class Menu extends JFrame implements ActionListener
 			JButton createBtn = new JButton("Create Class");
 			createBtn.addActionListener(this);
 			createPanel.add(createBtn);
+
+			createCErrorLbl = new JLabel("");
+			createPanel.add(createCErrorLbl);
 
 			layout.putConstraint(SpringLayout.WEST, courseLbl, (((WIDTH/2)/2)-50), SpringLayout.WEST,
 				createPanel);
@@ -147,32 +179,68 @@ public class Menu extends JFrame implements ActionListener
 				createPanel);
 			layout.putConstraint(SpringLayout.EAST, createBtn, -5, SpringLayout.WEST, 
 				logoutBtn);
+
+			layout.putConstraint(SpringLayout.WEST, createCErrorLbl, ((WIDTH/2)-50), SpringLayout.WEST,
+				createPanel);
+			layout.putConstraint(SpringLayout.NORTH, createCErrorLbl, y, SpringLayout.NORTH,
+				createPanel);
 			
 		}
 		else
 		{
+
+			JLabel idLbl = new JLabel("ID:");
+			createPanel.add(idLbl);
+			
+			idTxt = new JTextField("", 10);
+			createPanel.add(idTxt);
+
 			JLabel nameLbl = new JLabel("Name:");
 			createPanel.add(nameLbl);	
 
-			JTextField nameTxt = new JTextField("", 10);	
+			nameTxt = new JTextField("", 10);	
 			createPanel.add(nameTxt);
 
 			String[] users = { "Admin", "Teacher", "Student"}; 
 
-			JComboBox userList = new JComboBox(users);
+			userList = new JComboBox(users);
 			userList.setSelectedIndex(0);
-			userList.addActionListener(this);
+			userList.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent ev)
+				{
+					comboBoxActionPerformed(ev);
+				}
+			});
+
 			createPanel.add(userList);
 
 			JLabel passLbl = new JLabel("Password:");
 			createPanel.add(passLbl);
 
-			JPasswordField passTxt = new JPasswordField("", 10);
+			passTxt = new JTextField("", 10);
 			createPanel.add(passTxt);
+
+			createAErrorLbl = new JLabel("");
+			createPanel.add(createAErrorLbl);
 
 			JButton createBtn = new JButton("Create Account");
 			createBtn.addActionListener(this);
 			createPanel.add(createBtn);
+
+			layout.putConstraint(SpringLayout.WEST, idLbl, (((WIDTH/2)/2)-50), SpringLayout.WEST,
+				createPanel);
+			layout.putConstraint(SpringLayout.NORTH, idLbl, y, SpringLayout.NORTH,
+				createPanel);
+			layout.putConstraint(SpringLayout.NORTH, idTxt, y, SpringLayout.NORTH,
+				createPanel);
+			layout.putConstraint(SpringLayout.WEST, idTxt, 20, SpringLayout.EAST,
+				nameLbl);
+			layout.putConstraint(SpringLayout.NORTH, userList, y, SpringLayout.NORTH,
+				createPanel);
+			layout.putConstraint(SpringLayout.WEST, userList, 20, SpringLayout.EAST,
+				idTxt);
+
+			y += inc;
 
 			layout.putConstraint(SpringLayout.WEST, nameLbl, (((WIDTH/2)/2)-50), SpringLayout.WEST,
 				createPanel);
@@ -182,10 +250,6 @@ public class Menu extends JFrame implements ActionListener
 				createPanel);
 			layout.putConstraint(SpringLayout.WEST, nameTxt, 20, SpringLayout.EAST,
 				nameLbl);
-			layout.putConstraint(SpringLayout.NORTH, userList, y, SpringLayout.NORTH,
-				createPanel);
-			layout.putConstraint(SpringLayout.WEST, userList, 20, SpringLayout.EAST,
-				nameTxt);
 
 			y += inc;
 
@@ -205,15 +269,11 @@ public class Menu extends JFrame implements ActionListener
 			layout.putConstraint(SpringLayout.EAST, createBtn, -5, SpringLayout.WEST, 
 				logoutBtn);
 
+			layout.putConstraint(SpringLayout.WEST, createAErrorLbl, ((WIDTH/2)-50), SpringLayout.WEST,
+				createPanel);
+			layout.putConstraint(SpringLayout.NORTH, createAErrorLbl, y, SpringLayout.NORTH,
+				createPanel);
 		}
-
-		errorLbl = new JLabel("");
-		createPanel.add(errorLbl);
-
-		layout.putConstraint(SpringLayout.WEST, errorLbl, ((WIDTH/2)-50), SpringLayout.WEST,
-			createPanel);
-		layout.putConstraint(SpringLayout.NORTH, errorLbl, y, SpringLayout.NORTH,
-			createPanel);
 
 		return createPanel;
 
@@ -238,40 +298,23 @@ public class Menu extends JFrame implements ActionListener
 		JLabel cPassLbl = new JLabel("Current Password:");
 		aPanel.add(cPassLbl);	
 
-		final JPasswordField cPassTxt = new JPasswordField("", 10);	
+		cPassTxt = new JPasswordField("", 10);	
 		aPanel.add(cPassTxt);
 
 		JLabel nPassLbl = new JLabel("New Password:");
 		aPanel.add(nPassLbl);
 
-		final JPasswordField nPassTxt = new JPasswordField("", 10);
+		nPassTxt = new JPasswordField("", 10);
 		aPanel.add(nPassTxt);
 	
-		errorLbl = new JLabel("");
-		aPanel.add(errorLbl);
+		aErrorLbl = new JLabel("");
+		aPanel.add(aErrorLbl);
 
 		JButton submitBtn = new JButton("Submit");
 		submitBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ev)
 			{
-				try
-				{
-					String oldPass = new String(cPassTxt.getPassword());
-					String newPass = new String(nPassTxt.getPassword());
-			
-//					utility.changePass(curr.getId(), curr.getName(), oldPass, newPass);
-
-					boolean flag = curr.changePass(oldPass, newPass);
-				
-					if (flag)
-						errorLbl.setText("Change successful!");
-					else
-						errorLbl.setText("Incorrect Password");
-				}
-				catch (Exception ex)
-				{
-					errorLbl.setText("Incorrect Input");
-				}
+				passwordChangeActionPerformed(ev);	
 			}
 		});
 
@@ -317,9 +360,9 @@ public class Menu extends JFrame implements ActionListener
 
 		y += inc;
 
-		layout.putConstraint(SpringLayout.WEST, errorLbl, ((WIDTH/2)-50), SpringLayout.WEST,
+		layout.putConstraint(SpringLayout.WEST, aErrorLbl, ((WIDTH/2)/2), SpringLayout.WEST,
 			aPanel);
-		layout.putConstraint(SpringLayout.NORTH, errorLbl, y, SpringLayout.NORTH,
+		layout.putConstraint(SpringLayout.NORTH, aErrorLbl, y, SpringLayout.NORTH,
 			aPanel);
 
 		layout.putConstraint(SpringLayout.WEST, logoutBtn, (WIDTH-90), SpringLayout.WEST, 
@@ -479,7 +522,112 @@ public class Menu extends JFrame implements ActionListener
 			LoginFrame gui = new LoginFrame();
 			gui.setVisible(true);
 		}
+		else if (buttonString.equals("Create Class"))
+		{
+		}
+		else if (buttonString.equals("Create Account"))
+		{
+			Object selected = userList.getSelectedItem(); 
+			String combo = selected.toString();
+			
+			try {
+				int id = Integer.parseInt(idTxt.getText());
+				String name = nameTxt.getText();
+				String pass;	
+
+				if (combo.equals("Admin"))
+				{
+					pass = passTxt.getText();
+					Admin admin = new Admin(id, name, pass);
+					//utility.writeAdmin(id, name, pass, 'a');
+					createAErrorLbl.setText("Admin Created");
+	
+				} 
+				else
+				{
+					pass = Long.toHexString(Double.doubleToLongBits(Math.random())); // Our Random pass generator*
+					pass = pass.substring(0, 8);
+
+					passTxt.setText(pass);
+
+					if (combo.equals("Teacher"))
+					{
+						Teacher teacher = new Teacher(id, name, pass);
+						//utility.writeTeacher(id, name, pass, 't');
+						createAErrorLbl.setText("Teacher Created");
+					}
+					else
+					{
+						Student student = new Student(id, name, pass);
+						//utility.writeStudent(id, name, pass, 's'); //Write student should change
+						createAErrorLbl.setText("Student Created");
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				createAErrorLbl.setText("Incorrect Input");
+			}
+		}
 		else
 			System.out.println("Unexpected error.");	
+	}
+
+	private void passwordChangeActionPerformed(ActionEvent event)
+	{
+		try
+		{
+			String oldPass = new String(cPassTxt.getPassword());
+			String newPass = new String(nPassTxt.getPassword());
+
+			// DB	
+			// utility.changePass(curr.getId(), curr.getName(), oldPass, newPass);
+
+			// Needs a boolean to notify if change was successful or not
+			// if (flag) 
+			aErrorLbl.setText("Password Change Successful!");
+			//else 
+				//aErrorLbl.setText("Incorrect Password");
+		}
+		catch (Exception ex)
+		{
+			aErrorLbl.setText("Incorrect Input");
+		}
+	} 
+
+	private void comboBoxActionPerformed(ActionEvent event)
+	{
+		Object selected = userList.getSelectedItem(); 
+		String s = selected.toString();
+
+		if ((s.compareTo("Admin")) == 0)
+		{
+			passTxt.setEditable(true);
+		}
+		else
+		{
+			passTxt.setText("");
+			passTxt.setEditable(false);
+		}
+	}
+
+	private void tabChanged()
+	{
+		System.out.println("Hello");
+		aErrorLbl.setText("");
+		cPassTxt.setText("");
+		nPassTxt.setText("");
+
+		if (curr.getStatus() == 'a')
+		{
+			nameTxt.setText("");
+			userList.setSelectedIndex(0);
+			passTxt.setText("");
+			createAErrorLbl.setText("");
+			courseTxt.setText("");
+			titleTxt.setText("");
+			descTxt.setText("");
+			createCErrorLbl.setText("");
+		}
 	}
 }

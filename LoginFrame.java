@@ -15,6 +15,7 @@ public class LoginFrame extends JFrame implements ActionListener
 	{
 		super("Just In Time Learning");
 		int y = 10;
+
 		try
 		{
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -108,30 +109,32 @@ public class LoginFrame extends JFrame implements ActionListener
 	public void actionPerformed(ActionEvent e)
 	{
 		String buttonString = e.getActionCommand();
+		User curr = null;
+		Vector<User> u = new Vector<User>();
+		User admin = new Admin(1234, "Jeremy", "password");
+		User teacher = new Teacher(1111, "Bob", "software");
+		User student = new Student(2222, "James", "progit"); 
+		//Class nClass = new Class(272111, "CSE 110 Intro to Java", "This class teaches you java", teacher);
+		u.add(admin);
+		u.add(student);
+		u.add(teacher);
+		//Vector<Answer> answers = new Vector<Answer>();
+		//Answer ans = new Answer("2009", false);
+		//answers.add(ans);
+		//ans = new Answer("2010", false);
+		//answers.add(ans);
+		//ans = new Answer("2011", true);
+		//answers.add(ans);
+		//Vector<Question> question = new Vector<Question>();
+		//Question q = new Question("What year is it?", answers);
+		//question.add(q);
+		//Quiz quiz1 = new Quiz("Quiz 1", question);
+		//nClass.addQuiz(quiz1);
+
 
 		if (buttonString.equals("Login"))
 		{
-			User curr = null;
-			Vector<User> u = new Vector<User>();
-			User admin = new Admin(1234, "Jeremy", "password");
-			User teacher = new Teacher(1111, "Bob", "software");
-			User student = new Student(2222, "James", "progit"); 
-			//Class nClass = new Class(272111, "CSE 110 Intro to Java", "This class teaches you java", teacher);
-			u.add(admin);
-			u.add(student);
-			u.add(teacher);
-			//Vector<Answer> answers = new Vector<Answer>();
-			//Answer ans = new Answer("2009", false);
-			//answers.add(ans);
-			//ans = new Answer("2010", false);
-			//answers.add(ans);
-			//ans = new Answer("2011", true);
-			//answers.add(ans);
-			//Vector<Question> question = new Vector<Question>();
-			//Question q = new Question("What year is it?", answers);
-			//question.add(q);
-			//Quiz quiz1 = new Quiz("Quiz 1", question);
-			//nClass.addQuiz(quiz1);
+
 
 			try {
 				int id = Integer.parseInt(idTxt.getText());
