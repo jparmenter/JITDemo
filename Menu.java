@@ -8,10 +8,15 @@ public class Menu extends JFrame implements ActionListener
 	public static int WIDTH = 600;
 	public static int HEIGHT = 400;
 	private JLabel errorLbl;
+	private final User curr;
+	public static jaklUtilities utility;
 
-	public Menu()
+	public Menu(User _curr)
 	{
 		super("Just In Time Teaching");
+		curr = _curr;
+		utility = new jaklUtilities();
+
 	
 		try
 		{
@@ -31,15 +36,19 @@ public class Menu extends JFrame implements ActionListener
 		JPanel hPanel = home();
 		JPanel cPanel = course();
 		JPanel aPanel = account();
-		JPanel cAccountPanel = create("Create Account");
-		JPanel cClassPanel = create("Create Class");
+
 
 		jTab.add("Home", hPanel);
 		jTab.add("Class View", cPanel);
 		jTab.add("Account View", aPanel);
-		jTab.add("Create Account", cAccountPanel); 
-		jTab.add("Create Class", cClassPanel);
 
+		if (curr.getStatus() == 'a')
+		{
+			JPanel cAccountPanel = create("Create Account");
+			JPanel cClassPanel = create("Create Class");
+			jTab.add("Create Account", cAccountPanel); 
+			jTab.add("Create Class", cClassPanel);
+		}
 	}
 
 	public JPanel create(String title)
@@ -89,12 +98,13 @@ public class Menu extends JFrame implements ActionListener
 			JLabel descLbl = new JLabel("Course Description:");
 			createPanel.add(descLbl);
 
-//			JTextArea descTxt = new JTextArea("", 5, 20, JTextArea.SCROLLBARS_VERTICAL_ONLY);
 			JTextArea descTxt = new JTextArea(5, 20);
 
 			descTxt.setWrapStyleWord(true);
 			descTxt.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-			createPanel.add(descTxt);
+			JScrollPane pane = new JScrollPane(descTxt);
+			pane.setPreferredSize(new Dimension(200, 100));
+			createPanel.add(pane);
 
 			JButton createBtn = new JButton("Create Class");
 			createBtn.addActionListener(this);
@@ -126,9 +136,9 @@ public class Menu extends JFrame implements ActionListener
 				createPanel);
 			layout.putConstraint(SpringLayout.NORTH, descLbl, y, SpringLayout.NORTH,
 				createPanel);
-			layout.putConstraint(SpringLayout.NORTH, descTxt, y, SpringLayout.NORTH,
+			layout.putConstraint(SpringLayout.NORTH, pane, y, SpringLayout.NORTH,
 				createPanel);
-			layout.putConstraint(SpringLayout.WEST, descTxt, 20, SpringLayout.EAST,
+			layout.putConstraint(SpringLayout.WEST, pane, 20, SpringLayout.EAST,
 				descLbl);	
 
 			y += inc;
@@ -228,20 +238,43 @@ public class Menu extends JFrame implements ActionListener
 		JLabel cPassLbl = new JLabel("Current Password:");
 		aPanel.add(cPassLbl);	
 
-		JPasswordField cPassTxt = new JPasswordField("", 10);	
+		final JPasswordField cPassTxt = new JPasswordField("", 10);	
 		aPanel.add(cPassTxt);
 
 		JLabel nPassLbl = new JLabel("New Password:");
 		aPanel.add(nPassLbl);
 
-		JPasswordField nPassTxt = new JPasswordField("", 10);
+		final JPasswordField nPassTxt = new JPasswordField("", 10);
 		aPanel.add(nPassTxt);
 	
 		errorLbl = new JLabel("");
 		aPanel.add(errorLbl);
 
 		JButton submitBtn = new JButton("Submit");
-		submitBtn.addActionListener(this);
+		submitBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent ev)
+			{
+				try
+				{
+					String oldPass = new String(cPassTxt.getPassword());
+					String newPass = new String(nPassTxt.getPassword());
+			
+//					utility.changePass(curr.getId(), curr.getName(), oldPass, newPass);
+
+					boolean flag = curr.changePass(oldPass, newPass);
+				
+					if (flag)
+						errorLbl.setText("Change successful!");
+					else
+						errorLbl.setText("Incorrect Password");
+				}
+				catch (Exception ex)
+				{
+					errorLbl.setText("Incorrect Input");
+				}
+			}
+		});
+
 		aPanel.add(submitBtn);
 		
 		JButton logoutBtn = new JButton("Logout");
@@ -332,8 +365,6 @@ public class Menu extends JFrame implements ActionListener
 		JScrollPane pane = new JScrollPane(classList);
 		pane.setPreferredSize(new Dimension(300, 200));
 
-
-
 		MouseListener mouseListener = new MouseAdapter() {
 		      public void mouseClicked(MouseEvent mouseEvent) {
 			JList theList = (JList) mouseEvent.getSource();
@@ -355,6 +386,7 @@ public class Menu extends JFrame implements ActionListener
 			  
 			    int id = Integer.parseInt(s);
 			    System.out.println("Double-clicked on: " + id);
+			    // Class tempClass = utility.openClass(option);
 			  }
 			}
 		      }
@@ -404,11 +436,10 @@ public class Menu extends JFrame implements ActionListener
 		SpringLayout layout = new SpringLayout();
 		hPanel.setLayout(layout);
 		
-		String name = "Bob";
 		int x = 25;
 		int y = 25;
 		int inc = 45;
-		JLabel homeLbl = new JLabel("Hello, " + name);
+		JLabel homeLbl = new JLabel("Hello, " + curr.getName());
 		hPanel.add(homeLbl);
 
 		JLabel announceLbl = new JLabel("Announcements:");
@@ -447,11 +478,6 @@ public class Menu extends JFrame implements ActionListener
 			dispose();
 			LoginFrame gui = new LoginFrame();
 			gui.setVisible(true);
-		}
-		else
-		if (buttonString.equals("Submit"))
-		{
-			errorLbl.setText("Error:");
 		}
 		else
 			System.out.println("Unexpected error.");	

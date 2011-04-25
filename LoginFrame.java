@@ -1,12 +1,15 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.*;
 
 public class LoginFrame extends JFrame implements ActionListener
 {
-	public static final int WIDTH = 350;
-	public static final int HEIGHT = 250;
+	public final int WIDTH = 350;
+	public final int HEIGHT = 250;
 	private JLabel errorLbl;
+	private final JTextField idTxt;
+	private final JPasswordField passTxt;
 
 	public LoginFrame()
 	{
@@ -35,19 +38,20 @@ public class LoginFrame extends JFrame implements ActionListener
 		JLabel idLbl = new JLabel("Id:");
 		contentPane.add(idLbl);		
 
-		JTextField idTxt = new JTextField("", 10);
+		idTxt = new JTextField("", 10);
 		contentPane.add(idTxt);	
 
 		JLabel passLbl = new JLabel("Password:");
 		contentPane.add(passLbl);
 
-		JPasswordField passTxt = new JPasswordField("", 10);	
+		passTxt = new JPasswordField("", 10);	
 		contentPane.add(passTxt);
 
 		errorLbl = new JLabel("");
 		contentPane.add(errorLbl);
 
 		JButton loginBtn = new JButton("Login");
+		loginBtn.setMnemonic(KeyEvent.VK_ENTER);
 		loginBtn.addActionListener(this);
 
 		contentPane.add(loginBtn);	
@@ -107,10 +111,64 @@ public class LoginFrame extends JFrame implements ActionListener
 
 		if (buttonString.equals("Login"))
 		{
-			dispose();
-			Menu gui = new Menu();
-			gui.setVisible(true);
-			//errorLbl.setText("Error: ");	
+			User curr = null;
+			Vector<User> u = new Vector<User>();
+			User admin = new Admin(1234, "Jeremy", "password");
+			User teacher = new Teacher(1111, "Bob", "software");
+			User student = new Student(2222, "James", "progit"); 
+			//Class nClass = new Class(272111, "CSE 110 Intro to Java", "This class teaches you java", teacher);
+			u.add(admin);
+			u.add(student);
+			u.add(teacher);
+			//Vector<Answer> answers = new Vector<Answer>();
+			//Answer ans = new Answer("2009", false);
+			//answers.add(ans);
+			//ans = new Answer("2010", false);
+			//answers.add(ans);
+			//ans = new Answer("2011", true);
+			//answers.add(ans);
+			//Vector<Question> question = new Vector<Question>();
+			//Question q = new Question("What year is it?", answers);
+			//question.add(q);
+			//Quiz quiz1 = new Quiz("Quiz 1", question);
+			//nClass.addQuiz(quiz1);
+
+			try {
+				int id = Integer.parseInt(idTxt.getText());
+				String pass = new String(passTxt.getPassword());
+				User temp;
+				/*/ With DB
+				jaklUtilities utility = new jaklUtilities();
+				
+				temp = utility.openUser(id);
+
+				if ((temp != null) && (pass.compareTo(temp.getPass()) == 0))
+					curr = temp;
+				else
+					errorLbl.setText("Id or Pass or incorrect");
+
+				*/// w/o DB
+				if (u != null)
+					for (int i = 0; i < u.size(); i++)
+					{
+						temp = u.get(i);
+						if ((temp.getId() == id) && (pass.compareTo(temp.getPass()) == 0))
+							curr = temp;
+					}
+			//*/	
+				if (curr != null)
+				{
+					dispose();
+					Menu gui = new Menu(curr);
+					gui.setVisible(true);
+				}
+				else
+					errorLbl.setText("User does not exist");
+			}
+			catch (Exception ex)
+			{
+				errorLbl.setText("Id or Pass or incorrect");	
+			}
 		}
 		else
 		if (buttonString.equals("Close"))
