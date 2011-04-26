@@ -307,7 +307,7 @@ public class jaklUtilities
 		}
 	}
 
-	public void changePass(int id, String user, String pass, String nPass)
+	public boolean changePass(int id, String user, String pass, String nPass)
 	{
 		String strPass = null;
 		String newPass = nPass;
@@ -324,26 +324,26 @@ public class jaklUtilities
 		   if (pass.equals(strPass))
 		   {
 			   stmt.executeUpdate("UPDATE \"user\" SET pass = \'" + newPass + "\' WHERE id=\'" + id + "\'");
-			   System.out.println("Password change successful!");
+			   conn.close();
+			   return true;
 
 		   }
 		   else
 		   {
-			  System.out.println("Password change unsuccessful, please try again.");
+			  conn.close();
+			  return false;
 		   }
-
-		   conn.close();
 		}
 
 		catch (Exception e)
 		{
 			System.out.println(e.getMessage());
+			return false;
 		}
 	}
 
 public Quiz openQuiz(int quizId)
 		{
-			//System.out.println("HERESZFDFKLDSHSHDHGJLKSD");
 			int tempQuestionNumber;
 			String[] tempQuestion = null;
 			String[] tempAnswer1 = null;
