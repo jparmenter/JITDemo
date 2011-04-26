@@ -53,6 +53,10 @@ public class QuizFrame extends JFrame implements ActionListener
 		add(panel);
 	}	
 
+	public QuizFrame(Quiz quiz, Class _currClass, User _user)
+	{
+	}
+
 	public JPanel createQuiz()
 	{
 		JPanel panel = new JPanel();

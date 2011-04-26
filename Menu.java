@@ -109,15 +109,19 @@ public class Menu extends JFrame
 
 		JPanel hPanel = home(currClass.getTitle());
 		JPanel qPanel = view("Quiz Menu");
+		JPanel gPanel = grades(); 
 
 		jTab.add("Home", hPanel);
 		jTab.add("Quiz View", qPanel);
+
 		
 		if (curr.getStatus() != 's')
 		{
 			JPanel cQuizPanel = create("Create Quiz");
 			jTab.add("Create Quiz", cQuizPanel);
 		}
+
+		jTab.add("Grade View", gPanel);
 
 	}
 
@@ -711,6 +715,83 @@ public class Menu extends JFrame
 
 
 		return hPanel;
+	}
+
+	public JPanel grades()
+	{
+		JPanel gradesPanel = new JPanel();
+		SpringLayout layout = new SpringLayout();
+		gradesPanel.setLayout(layout);
+
+		int x = 25;
+		int y = 25;
+		int inc = 45;
+
+		int i = 0;
+		JLabel titleLbl = new JLabel("Grades");
+		gradesPanel.add(titleLbl);
+
+		JLabel qLbl = new JLabel("Quiz");
+		gradesPanel.add(qLbl);
+		
+		JLabel gLbl = new JLabel("Grades");
+		gradesPanel.add(gLbl);
+	
+		int size = 4;
+		JLabel [] qTitleLbl = new JLabel[size];
+
+		JLabel [] qGradeLbl = new JLabel[size];		
+
+		JButton backBtn = new JButton("Main Menu");
+		backBtn.addActionListener(this);
+		gradesPanel.add(backBtn);
+		
+
+		layout.putConstraint(SpringLayout.WEST, titleLbl, x, SpringLayout.WEST, 
+			gradesPanel);
+		layout.putConstraint(SpringLayout.NORTH, titleLbl, y, SpringLayout.NORTH, 
+			gradesPanel);
+
+		y += inc;
+		x = 100;
+
+		layout.putConstraint(SpringLayout.WEST, qLbl, x , SpringLayout.WEST,
+			gradesPanel);
+		layout.putConstraint(SpringLayout.NORTH, qLbl, y, SpringLayout.NORTH,
+			gradesPanel);
+		layout.putConstraint(SpringLayout.NORTH, gLbl, y, SpringLayout.NORTH,
+			gradesPanel);
+		layout.putConstraint(SpringLayout.WEST, gLbl, 100, SpringLayout.EAST,
+			qLbl);
+
+		y += inc;
+
+		while (i < size)
+		{
+			qTitleLbl[i] = new JLabel("Quiz");
+			gradesPanel.add(qTitleLbl[i]);
+
+			qGradeLbl[i] = new JLabel("100%");
+			gradesPanel.add(qGradeLbl[i]);
+
+			layout.putConstraint(SpringLayout.WEST, qTitleLbl[i], x , SpringLayout.WEST,
+				gradesPanel);
+			layout.putConstraint(SpringLayout.NORTH, qTitleLbl[i], y, SpringLayout.NORTH,
+				gradesPanel);
+			layout.putConstraint(SpringLayout.NORTH, qGradeLbl[i], y, SpringLayout.NORTH,
+				gradesPanel);
+			layout.putConstraint(SpringLayout.WEST, qGradeLbl[i], 100, SpringLayout.EAST,
+				qTitleLbl[i]);
+			y += inc;
+			i++;
+		}	
+
+		layout.putConstraint(SpringLayout.WEST, backBtn, (WIDTH-115), SpringLayout.WEST, 
+			gradesPanel);
+		layout.putConstraint(SpringLayout.NORTH, backBtn, (HEIGHT-110), SpringLayout.NORTH, 
+			gradesPanel); 
+
+		return gradesPanel;
 	}
 
 	public void actionPerformed(ActionEvent e)
