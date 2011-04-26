@@ -10,15 +10,14 @@ public class Menu extends JFrame
 	public static int WIDTH = 600;
 	public static int HEIGHT = 400;
 	public static jaklUtilities utility;
-
-	// Used for Errors!
-	private JLabel errorLbl;
+	private final User curr;
+	private final Class currClass;
 
 	// Used for changed Password
 	private JLabel aErrorLbl;
 	private JPasswordField cPassTxt;
 	private JPasswordField nPassTxt;
-	private final User curr;
+
 
 	// Used for create Accounts
 	private JTextField idTxt;
@@ -31,11 +30,18 @@ public class Menu extends JFrame
 	private JTextField courseTxt;
 	private JTextField titleTxt;
 	private JTextArea descTxt;
+	private JLabel teacherLbl;
+	private JTextField teacherTxt;
 	private JLabel createCErrorLbl;
+
+	// Used for create Quiz
+	private JTextField qTitleTxt; 
+	private JComboBox numList;
 
 	public Menu(User _curr)
 	{
 		super("Just In Time Teaching");
+		currClass = null;
 		curr = _curr;
 		utility = new jaklUtilities();
 	
@@ -62,8 +68,8 @@ public class Menu extends JFrame
 		     }
 		});*/	
 
-		JPanel hPanel = home();
-		JPanel cPanel = course();
+		JPanel hPanel = home("Main Menu");
+		JPanel cPanel = view("Class Menu");
 		JPanel aPanel = account();
 
 
@@ -80,6 +86,41 @@ public class Menu extends JFrame
 		}
 	}
 
+	public Menu(Class _currClass, User _curr)
+	{
+		super("Just In Time Teaching");
+		currClass = _currClass;
+		curr = _curr;
+
+		try
+		{
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		}	
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+
+		setSize(WIDTH, HEIGHT);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+		JTabbedPane jTab = new JTabbedPane();
+		getContentPane().add(jTab);
+
+		JPanel hPanel = home(currClass.getTitle());
+		JPanel qPanel = view("Quiz Menu");
+
+		jTab.add("Home", hPanel);
+		jTab.add("Quiz View", qPanel);
+		
+		if (curr.getStatus() != 's')
+		{
+			JPanel cQuizPanel = create("Create Quiz");
+			jTab.add("Create Quiz", cQuizPanel);
+		}
+
+	}
+
 	public JPanel create(String title)
 	{
 		JPanel createPanel = new JPanel();
@@ -93,9 +134,6 @@ public class Menu extends JFrame
 		JLabel createLbl = new JLabel(title);
 		createPanel.add(createLbl);
 
-		JButton logoutBtn = new JButton("Logout");
-		logoutBtn.addActionListener(this);
-		createPanel.add(logoutBtn);
 
 		layout.putConstraint(SpringLayout.WEST, createLbl, x, SpringLayout.WEST, 
 			createPanel);
@@ -103,11 +141,6 @@ public class Menu extends JFrame
 			createPanel); 
 
 		y += inc;
-
-		layout.putConstraint(SpringLayout.WEST, logoutBtn, (WIDTH-90), SpringLayout.WEST, 
-			createPanel);
-		layout.putConstraint(SpringLayout.NORTH, logoutBtn, (HEIGHT-110), SpringLayout.NORTH, 
-			createPanel); 
 
 
 		if (title.equals("Create Class"))
@@ -131,13 +164,25 @@ public class Menu extends JFrame
 
 			descTxt.setWrapStyleWord(true);
 			descTxt.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-			JScrollPane pane = new JScrollPane(descTxt);
-			pane.setPreferredSize(new Dimension(200, 100));
+			JScrollPane pane = new JScrollPane(descTxt, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+                                       JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+			pane.setPreferredSize(new Dimension(200, 50));
 			createPanel.add(pane);
+
+			teacherLbl = new JLabel("Enter a Teacher ID:");
+			createPanel.add(teacherLbl);
+		
+			teacherTxt = new JTextField("", 10);
+			createPanel.add(teacherTxt);
 
 			JButton createBtn = new JButton("Create Class");
 			createBtn.addActionListener(this);
 			createPanel.add(createBtn);
+
+			JButton logoutBtn = new JButton("Logout");
+			logoutBtn.addActionListener(this);
+			createPanel.add(logoutBtn);
+;
 
 			createCErrorLbl = new JLabel("");
 			createPanel.add(createCErrorLbl);
@@ -173,6 +218,17 @@ public class Menu extends JFrame
 			layout.putConstraint(SpringLayout.WEST, pane, 20, SpringLayout.EAST,
 				descLbl);	
 
+			y += inc + 25;
+
+			layout.putConstraint(SpringLayout.WEST, teacherLbl, (((WIDTH/2)/2)-50), SpringLayout.WEST,
+				createPanel);
+			layout.putConstraint(SpringLayout.NORTH, teacherLbl, y, SpringLayout.NORTH,
+				createPanel);
+			layout.putConstraint(SpringLayout.NORTH, teacherTxt, y, SpringLayout.NORTH,
+				createPanel);
+			layout.putConstraint(SpringLayout.WEST, teacherTxt, 20, SpringLayout.EAST,
+				teacherLbl);	
+
 			y += inc;
 
 			layout.putConstraint(SpringLayout.NORTH ,createBtn, (HEIGHT-110), SpringLayout.NORTH, 
@@ -183,10 +239,15 @@ public class Menu extends JFrame
 			layout.putConstraint(SpringLayout.WEST, createCErrorLbl, ((WIDTH/2)-50), SpringLayout.WEST,
 				createPanel);
 			layout.putConstraint(SpringLayout.NORTH, createCErrorLbl, y, SpringLayout.NORTH,
+				createPanel);		
+
+			layout.putConstraint(SpringLayout.WEST, logoutBtn, (WIDTH-90), SpringLayout.WEST, 
+				createPanel);
+			layout.putConstraint(SpringLayout.NORTH, logoutBtn, (HEIGHT-110), SpringLayout.NORTH, 
 				createPanel);
 			
 		}
-		else
+		else if (title.equals("Create Account"))
 		{
 
 			JLabel idLbl = new JLabel("ID:");
@@ -226,6 +287,10 @@ public class Menu extends JFrame
 			JButton createBtn = new JButton("Create Account");
 			createBtn.addActionListener(this);
 			createPanel.add(createBtn);
+
+			JButton logoutBtn = new JButton("Logout");
+			logoutBtn.addActionListener(this);
+			createPanel.add(logoutBtn);
 
 			layout.putConstraint(SpringLayout.WEST, idLbl, (((WIDTH/2)/2)-50), SpringLayout.WEST,
 				createPanel);
@@ -267,11 +332,83 @@ public class Menu extends JFrame
 			layout.putConstraint(SpringLayout.NORTH ,createBtn, (HEIGHT-110), SpringLayout.NORTH, 
 				createPanel);
 			layout.putConstraint(SpringLayout.EAST, createBtn, -5, SpringLayout.WEST, 
-				logoutBtn);
+				logoutBtn);			
+
+			layout.putConstraint(SpringLayout.WEST, logoutBtn, (WIDTH-90), SpringLayout.WEST, 
+				createPanel);
+			layout.putConstraint(SpringLayout.NORTH, logoutBtn, (HEIGHT-110), SpringLayout.NORTH, 
+				createPanel); 
 
 			layout.putConstraint(SpringLayout.WEST, createAErrorLbl, ((WIDTH/2)-50), SpringLayout.WEST,
 				createPanel);
 			layout.putConstraint(SpringLayout.NORTH, createAErrorLbl, y, SpringLayout.NORTH,
+				createPanel);
+		}
+		else
+		{
+			JLabel titleLbl = new JLabel("Quiz Title:");
+			createPanel.add(titleLbl);
+
+			qTitleTxt = new JTextField("", 15);
+			createPanel.add(qTitleTxt);
+
+			JLabel questionLbl = new JLabel("How many questions:");
+			createPanel.add(questionLbl);
+			
+			int i = 1;
+			String [] num = new String[99];
+			
+			while ((i-1) < num.length)
+			{
+				num[(i-1)] = Integer.toString(i); 
+				i++;
+			}
+
+			numList = new JComboBox(num);
+			numList.setSelectedIndex(0);	
+
+			createPanel.add(numList);	
+
+			JButton contBtn = new JButton("Continue");
+			contBtn.addActionListener(this);
+			createPanel.add(contBtn);
+
+			JButton backBtn = new JButton("Main Menu");
+			backBtn.addActionListener(this);
+			createPanel.add(backBtn);
+			
+
+
+			layout.putConstraint(SpringLayout.WEST, titleLbl, (((WIDTH/2/2)-50)), SpringLayout.WEST,
+				createPanel);
+			layout.putConstraint(SpringLayout.NORTH, titleLbl, y, SpringLayout.NORTH,
+				createPanel);
+			layout.putConstraint(SpringLayout.NORTH, qTitleTxt, y, SpringLayout.NORTH,
+				createPanel);
+			layout.putConstraint(SpringLayout.WEST, qTitleTxt, 20, SpringLayout.EAST,
+				titleLbl);
+
+			y += inc;
+
+			layout.putConstraint(SpringLayout.WEST, questionLbl, (((WIDTH/2/2)-50)), SpringLayout.WEST,
+				createPanel);
+			layout.putConstraint(SpringLayout.NORTH, questionLbl, y, SpringLayout.NORTH,
+				createPanel);
+			layout.putConstraint(SpringLayout.NORTH, numList, y, SpringLayout.NORTH,
+				createPanel);
+			layout.putConstraint(SpringLayout.WEST, numList, 20, SpringLayout.EAST,
+				questionLbl);
+
+			y += inc;
+
+			layout.putConstraint(SpringLayout.NORTH , contBtn, (HEIGHT-110), SpringLayout.NORTH, 
+				createPanel);
+			layout.putConstraint(SpringLayout.EAST, contBtn, -5, SpringLayout.WEST, 
+				backBtn);
+
+			layout.putConstraint(SpringLayout.WEST, backBtn, (WIDTH-115), SpringLayout.WEST, 
+				createPanel);
+			layout.putConstraint(SpringLayout.NORTH, backBtn, (HEIGHT-110), SpringLayout.NORTH, 
 				createPanel);
 		}
 
@@ -360,7 +497,7 @@ public class Menu extends JFrame
 
 		y += inc;
 
-		layout.putConstraint(SpringLayout.WEST, aErrorLbl, ((WIDTH/2)/2), SpringLayout.WEST,
+		layout.putConstraint(SpringLayout.WEST, aErrorLbl, ((WIDTH/2)-50), SpringLayout.WEST,
 			aPanel);
 		layout.putConstraint(SpringLayout.NORTH, aErrorLbl, y, SpringLayout.NORTH,
 			aPanel);
@@ -379,7 +516,7 @@ public class Menu extends JFrame
 
 	}
 
-	public JPanel course()
+	public JPanel view(String title)
 	{
 		JPanel cPanel = new JPanel();
 		SpringLayout layout = new SpringLayout();
@@ -389,66 +526,104 @@ public class Menu extends JFrame
 		int y = 25;
 		int inc = 45;
 
-		JLabel classLbl = new JLabel("Class Menu");
-		cPanel.add(classLbl);
+		JLabel titleLbl = new JLabel(title);
+		cPanel.add(titleLbl);
 
-		String list[] = {"22722 CSE 340 Intro to Software Engineering",
-			"232424 CSE 205 Java Programming",
-			"235353 CSE 240 Into to PL",
-			"345454 CSE 310 Data Structs",
-			"334433 CSE 205 Java Programming",
-			"553355 CSE 120 Digital Design"};
+		JLabel insLbl = new JLabel("Double click to view");
+		cPanel.add(insLbl);
 
-		JList classList = new JList(list);
-		classList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		classList.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-		classList.setLayoutOrientation(classList.VERTICAL);
-		classList.setVisibleRowCount(4);
-		classList.setSelectedIndex(-1);
-		JScrollPane pane = new JScrollPane(classList);
+		JScrollPane pane = new JScrollPane();
 		pane.setPreferredSize(new Dimension(300, 200));
-
-		MouseListener mouseListener = new MouseAdapter() {
-		      public void mouseClicked(MouseEvent mouseEvent) {
-			JList theList = (JList) mouseEvent.getSource();
-			if (mouseEvent.getClickCount() == 2) {
-			  int index = theList.locationToIndex(mouseEvent.getPoint());
-			  if (index >= 0) {
-			    Object o = theList.getModel().getElementAt(index);
-			    char [] input = o.toString().toCharArray();
-			    int i = 0;
-			    char c = input[i];
-			    String s = "";
-		
-			    while (Character.isDigit(c))
-			    {
-				s += c;
-				i++;
-				c = input[i];	
-			    }
-			  
-			    int id = Integer.parseInt(s);
-			    System.out.println("Double-clicked on: " + id);
-			    // Class tempClass = utility.openClass(option);
-			  }
-			}
-		      }
-		};
-
-		classList.addMouseListener(mouseListener);
-
 		cPanel.add(pane);
 
-		JLabel insLbl = new JLabel("Double click a class to view");
-		cPanel.add(insLbl);
+		if (title.equals("Class Menu"))
+		{
+			String list[] = {"22722 CSE 340 Intro to Software Engineering",
+				"232424 CSE 205 Java Programming",
+				"235353 CSE 240 Into to PL",
+				"345454 CSE 310 Data Structs",
+				"334433 CSE 205 Java Programming",
+				"553355 CSE 120 Digital Design"};
+
+			JList classList = new JList(list);
+			classList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+			classList.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+			classList.setLayoutOrientation(classList.VERTICAL);
+			classList.setVisibleRowCount(4);
+			classList.setSelectedIndex(-1);
+			pane.setViewportView(classList);
+
+
+			classList.addMouseListener( new MouseAdapter() {
+			      public void mouseClicked(MouseEvent mouseEvent) {
+				JList theList = (JList) mouseEvent.getSource();
+				if (mouseEvent.getClickCount() == 2) {
+				  int index = theList.locationToIndex(mouseEvent.getPoint());
+				  if (index >= 0) {
+				    Object o = theList.getModel().getElementAt(index);
+				    char [] input = o.toString().toCharArray();
+				    int i = 0;
+				    char c = input[i];
+				    String s = "";
+			
+				    while (Character.isDigit(c))
+				    {
+					s += c;
+					i++;
+					c = input[i];	
+				    }
+				  
+				    int id = Integer.parseInt(s);
+				    System.out.println("Double-clicked on: " + id);
+			
+				    User teacher = new Teacher(1111, "Bob", "software");
+				    Class tempClass = new Class(272111, "CSE 110 Intro to Java", "This class teaches you java", teacher.getId());
+				    // Class tempClass = utility.openClass(option);
+				    dispose();
+				    Menu classView = new Menu(tempClass, curr);
+				    classView.setVisible(true);
+				  }
+				}
+			      }
+			});
+		}
+		else
+		{
+			String list[] = {"Quiz 1", "Quiz 2", "Quiz 3"};
+
+			JList quizList = new JList(list);
+			quizList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+			quizList.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+			quizList.setLayoutOrientation(quizList.VERTICAL);
+			quizList.setVisibleRowCount(4);
+			quizList.setSelectedIndex(-1);
+			pane.setViewportView(quizList);
+
+			quizList.addMouseListener( new MouseAdapter() {
+			      public void mouseClicked(MouseEvent mouseEvent) {
+				JList theList = (JList) mouseEvent.getSource();
+				if (mouseEvent.getClickCount() == 2) {
+				  int index = theList.locationToIndex(mouseEvent.getPoint());
+				  if (index >= 0) {
+				    Object o = theList.getModel().getElementAt(index);
+				    String s = o.toString();
+			
+				    System.out.println("Double-clicked on: " + s);
+			
+				  }
+				}
+			      }
+			});
+
+		}
 
 		JButton logoutBtn = new JButton("Logout");
 		logoutBtn.addActionListener(this);
 		cPanel.add(logoutBtn);
 
-		layout.putConstraint(SpringLayout.WEST, classLbl, x, SpringLayout.WEST, 
+		layout.putConstraint(SpringLayout.WEST, titleLbl, x, SpringLayout.WEST, 
 			cPanel);
-		layout.putConstraint(SpringLayout.NORTH, classLbl, y, SpringLayout.NORTH, 
+		layout.putConstraint(SpringLayout.NORTH, titleLbl, y, SpringLayout.NORTH, 
 			cPanel); 
 
 		y += inc;
@@ -473,7 +648,7 @@ public class Menu extends JFrame
 		return cPanel;
 	}
 
-	public JPanel home()
+	public JPanel home(String home)
 	{
 		JPanel hPanel = new JPanel();
 		SpringLayout layout = new SpringLayout();
@@ -482,15 +657,38 @@ public class Menu extends JFrame
 		int x = 25;
 		int y = 25;
 		int inc = 45;
-		JLabel homeLbl = new JLabel("Hello, " + curr.getName());
+
+		JLabel homeLbl = new JLabel(home);
 		hPanel.add(homeLbl);
+
+		JLabel helloLbl = new JLabel("Hello, " + curr.getName());
+		hPanel.add(helloLbl);
 
 		JLabel announceLbl = new JLabel("Announcements:");
 		hPanel.add(announceLbl);
 
-		JButton logoutBtn = new JButton("Logout");
-		logoutBtn.addActionListener(this);
-		hPanel.add(logoutBtn);
+		if (home.equals("Main Menu"))
+		{
+			JButton logoutBtn = new JButton("Logout");
+			logoutBtn.addActionListener(this);
+			hPanel.add(logoutBtn);
+
+			layout.putConstraint(SpringLayout.WEST, logoutBtn, (WIDTH-90), SpringLayout.WEST, 
+				hPanel);
+			layout.putConstraint(SpringLayout.NORTH, logoutBtn, (HEIGHT-110), SpringLayout.NORTH, 
+				hPanel); 
+		}
+		else
+		{
+			JButton backBtn = new JButton("Main Menu");
+			backBtn.addActionListener(this);
+			hPanel.add(backBtn);
+			
+			layout.putConstraint(SpringLayout.WEST, backBtn, (WIDTH-115), SpringLayout.WEST, 
+				hPanel);
+			layout.putConstraint(SpringLayout.NORTH, backBtn, (HEIGHT-110), SpringLayout.NORTH, 
+				hPanel); 
+		}
 
 		layout.putConstraint(SpringLayout.WEST, homeLbl, x, SpringLayout.WEST, 
 			hPanel);
@@ -499,15 +697,18 @@ public class Menu extends JFrame
 
 		y += inc;
 
+		layout.putConstraint(SpringLayout.WEST, helloLbl, x, SpringLayout.WEST, 
+			hPanel);
+		layout.putConstraint(SpringLayout.NORTH, helloLbl, y, SpringLayout.NORTH, 
+			hPanel); 
+		y += inc;
+
 		layout.putConstraint(SpringLayout.WEST, announceLbl, x, SpringLayout.WEST,
 			hPanel);
 		layout.putConstraint(SpringLayout.NORTH, announceLbl, y, SpringLayout.NORTH,
 			hPanel);
 		
-		layout.putConstraint(SpringLayout.WEST, logoutBtn, (WIDTH-90), SpringLayout.WEST, 
-			hPanel);
-		layout.putConstraint(SpringLayout.NORTH, logoutBtn, (HEIGHT-110), SpringLayout.NORTH, 
-			hPanel); 
+
 
 		return hPanel;
 	}
@@ -524,6 +725,27 @@ public class Menu extends JFrame
 		}
 		else if (buttonString.equals("Create Class"))
 		{
+			try 
+			{
+				int id = Integer.parseInt(courseTxt.getText());
+				String title = titleTxt.getText();
+				String desc = descTxt.getText();
+				int  nUser = Integer.parseInt(teacherTxt.getText());
+
+				//User tUser = utiliity.openUser(nUser); 
+			/*	if (tempU != null)
+				{
+					utility.writeClass(id, title, desc, nUser);*/
+					createCErrorLbl.setText("Class Created");
+			/*	}
+				else
+					createCErrorLbl.setText("Class failed to be created");
+			*/
+			}
+			catch(Exception ex)
+			{
+				createCErrorLbl.setText("Incorrect Input");
+			}
 		}
 		else if (buttonString.equals("Create Account"))
 		{
@@ -569,6 +791,23 @@ public class Menu extends JFrame
 				createAErrorLbl.setText("Incorrect Input");
 			}
 		}
+		else if (buttonString.equals("Main Menu"))
+		{
+			dispose();
+			Menu menu = new Menu(curr);
+			menu.setVisible(true);
+		}
+		else if (buttonString.equals("Continue"))
+		{
+			Object selected = numList.getSelectedItem(); 
+			int num = Integer.parseInt(selected.toString());	
+
+			String quiz = qTitleTxt.getText();
+
+			dispose();
+			QuizFrame q = new  QuizFrame(quiz, num, currClass, curr);
+			q.setVisible(true);
+		}
 		else
 			System.out.println("Unexpected error.");	
 	}
@@ -613,7 +852,6 @@ public class Menu extends JFrame
 
 	private void tabChanged()
 	{
-		System.out.println("Hello");
 		aErrorLbl.setText("");
 		cPassTxt.setText("");
 		nPassTxt.setText("");
