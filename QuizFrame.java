@@ -52,6 +52,7 @@ public class QuizFrame extends JFrame implements ActionListener
 		setSize(WIDTH, HEIGHT);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setResizable(false);
+		setLocationRelativeTo(null);
 
 		JPanel panel = createQuiz();	
 		add(panel);
@@ -78,6 +79,8 @@ public class QuizFrame extends JFrame implements ActionListener
 
 		setSize(WIDTH, HEIGHT);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setLocationRelativeTo(null);
+
 		add(takeQuiz());
 	}
 

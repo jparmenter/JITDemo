@@ -59,6 +59,7 @@ public class Menu extends JFrame
 		setSize(WIDTH, HEIGHT);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setResizable(false);
+		setLocationRelativeTo(null);
 
 		final JTabbedPane jTab = new JTabbedPane();
 		getContentPane().add(jTab);
@@ -108,6 +109,7 @@ public class Menu extends JFrame
 
 		setSize(WIDTH, HEIGHT);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setLocationRelativeTo(null);
 
 		JTabbedPane jTab = new JTabbedPane();
 		getContentPane().add(jTab);
@@ -649,9 +651,9 @@ public class Menu extends JFrame
 
 		}
 
-		JButton logoutBtn = new JButton("Logout");
-		logoutBtn.addActionListener(this);
-		cPanel.add(logoutBtn);
+		JButton backBtn = new JButton("Main Menu");
+		backBtn.addActionListener(this);
+		cPanel.add(backBtn);
 
 		layout.putConstraint(SpringLayout.WEST, titleLbl, x, SpringLayout.WEST,
 			cPanel);
@@ -672,9 +674,9 @@ public class Menu extends JFrame
 		layout.putConstraint(SpringLayout.NORTH, pane, y, SpringLayout.NORTH,
 			cPanel);
 
-		layout.putConstraint(SpringLayout.WEST, logoutBtn, (WIDTH-90), SpringLayout.WEST,
+		layout.putConstraint(SpringLayout.WEST, backBtn, (WIDTH-115), SpringLayout.WEST,
 			cPanel);
-		layout.putConstraint(SpringLayout.NORTH, logoutBtn, (HEIGHT-110), SpringLayout.NORTH,
+		layout.putConstraint(SpringLayout.NORTH, backBtn, (HEIGHT-110), SpringLayout.NORTH,
 			cPanel);
 
 		return cPanel;

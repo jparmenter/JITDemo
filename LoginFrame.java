@@ -28,6 +28,7 @@ public class LoginFrame extends JFrame implements ActionListener
 		setSize(WIDTH, HEIGHT);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
 		setResizable(false);
+		setLocationRelativeTo(null);
 	
 		Container contentPane = getContentPane();
 
