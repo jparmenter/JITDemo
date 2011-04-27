@@ -42,7 +42,7 @@ public class Menu extends JFrame
 
 	public Menu(User _curr)
 	{
-		super("Just In Time Teaching");
+		super("Just In Time Learning");
 		currClass = null;
 		curr = _curr;
 		utility = new jaklUtilities();
@@ -94,7 +94,7 @@ public class Menu extends JFrame
 
 	public Menu(Class _currClass, User _curr)
 	{
-		super("Just In Time Teaching");
+		super("Just In Time Learning");
 		currClass = _currClass;
 		curr = _curr;
 

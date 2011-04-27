@@ -32,7 +32,7 @@ public class QuizFrame extends JFrame implements ActionListener
 
 	public QuizFrame(String _title, int _size, Class _currClass, User _curr)
 	{
-		super("Just In Time Teaching");
+		super("Just In Time Learning");
 		currClass = _currClass;
 		curr = _curr;
 		title = _title;
@@ -60,7 +60,7 @@ public class QuizFrame extends JFrame implements ActionListener
 
 	public QuizFrame(Quiz _quiz, Class _currClass, User _curr)
 	{
-		super("Just In Time Teaching");
+		super("Just In Time Learning");
 		currClass = _currClass;
 		curr = _curr;
 		quiz = _quiz;
