@@ -13,6 +13,7 @@ public class QuizFrame extends JFrame implements ActionListener
 	private final User curr;
 	private final String title;
 	private final int size;
+	private final Quiz quiz;
 	private int i;
 
 	private JTextField questionTxt;
@@ -26,6 +27,7 @@ public class QuizFrame extends JFrame implements ActionListener
 	private JTextField answer2;
 	private JTextField answer3;
 	private JTextField answer4;
+	private JLabel qLbl;
 	private JLabel errorLbl;
 
 	public QuizFrame(String _title, int _size, Class _currClass, User _curr)
@@ -34,6 +36,7 @@ public class QuizFrame extends JFrame implements ActionListener
 		currClass = _currClass;
 		curr = _curr;
 		title = _title;
+		quiz = null;
 		size = _size;
 		i = 1;
 
@@ -48,13 +51,34 @@ public class QuizFrame extends JFrame implements ActionListener
 
 		setSize(WIDTH, HEIGHT);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setResizable(false);
 
 		JPanel panel = createQuiz();	
 		add(panel);
 	}	
 
-	public QuizFrame(Quiz quiz, Class _currClass, User _user)
+	public QuizFrame(Quiz _quiz, Class _currClass, User _curr)
 	{
+		super("Just In Time Teaching");
+		currClass = _currClass;
+		curr = _curr;
+		quiz = _quiz;
+		title = "";
+		size = 4; // Amount of Quiz Questions
+		i = 1;
+
+		try
+		{
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		}	
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+
+		setSize(WIDTH, HEIGHT);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		add(takeQuiz());
 	}
 
 	public JPanel createQuiz()
@@ -206,6 +230,137 @@ public class QuizFrame extends JFrame implements ActionListener
 		return panel;
 	}
 
+	public JPanel takeQuiz()
+	{
+		JPanel panel = new JPanel();
+		SpringLayout layout = new SpringLayout();
+		panel.setLayout(layout);
+
+		int x = 25;
+		int y = 25;
+		int inc = 45;
+
+		JLabel titleLbl = new JLabel("Quiz Title");//quiz.getTitle()
+		panel.add(titleLbl);
+	
+		qLbl = new JLabel("Quesion");
+		panel.add(qLbl);	
+
+		radio1 = new JRadioButton();
+		radio1.addActionListener(this);
+		panel.add(radio1);
+
+		radio2 = new JRadioButton();
+		radio2.addActionListener(this);
+		panel.add(radio2);
+
+		radio3 = new JRadioButton();
+		radio3.addActionListener(this);
+		panel.add(radio3);
+
+		radio4 = new JRadioButton();	
+		radio4.addActionListener(this);
+		panel.add(radio4);
+
+		ButtonGroup group = new ButtonGroup();
+		group.add(radio1);
+		group.add(radio2);
+		group.add(radio3);
+		group.add(radio4);	
+
+		errorLbl = new JLabel("");
+		panel.add(errorLbl);
+
+		submitBtn = new JButton("Continue");
+		submitBtn.addActionListener(this);
+		panel.add(submitBtn);
+
+		if (i == size)
+		{
+			submitBtn.setText("Submit");
+		}
+
+		cancelBtn = new JButton("Cancel");
+		cancelBtn.addActionListener(this);
+		panel.add(cancelBtn);
+
+
+
+		question();
+
+		layout.putConstraint(SpringLayout.WEST, titleLbl, ((WIDTH/2)-100), SpringLayout.WEST,
+			panel);
+		layout.putConstraint(SpringLayout.NORTH, titleLbl, y, SpringLayout.NORTH,
+			panel); 
+
+		y += inc;
+
+		layout.putConstraint(SpringLayout.WEST, qLbl, (((WIDTH/2))-50), SpringLayout.WEST,
+			panel);
+		layout.putConstraint(SpringLayout.NORTH, qLbl, y, SpringLayout.NORTH,
+			panel);
+
+		y += inc;
+
+		layout.putConstraint(SpringLayout.WEST, radio1, (((WIDTH/2)/2)-50), SpringLayout.WEST,
+			panel);
+		layout.putConstraint(SpringLayout.NORTH, radio1, y, SpringLayout.NORTH,
+			panel);
+
+		y += inc;
+
+
+		layout.putConstraint(SpringLayout.WEST, radio2, (((WIDTH/2)/2)-50), SpringLayout.WEST,
+			panel);
+		layout.putConstraint(SpringLayout.NORTH, radio2, y, SpringLayout.NORTH,
+			panel);
+
+		y += inc;
+
+		layout.putConstraint(SpringLayout.WEST, radio3, (((WIDTH/2)/2)-50), SpringLayout.WEST,
+			panel);
+		layout.putConstraint(SpringLayout.NORTH, radio3, y, SpringLayout.NORTH,
+			panel);
+
+		y += inc;
+	
+		layout.putConstraint(SpringLayout.WEST, radio4, (((WIDTH/2)/2)-50), SpringLayout.WEST,
+			panel);
+		layout.putConstraint(SpringLayout.NORTH, radio4, y, SpringLayout.NORTH,
+			panel);
+
+		y += inc;
+
+		layout.putConstraint(SpringLayout.WEST, errorLbl, ((WIDTH/2)-50), SpringLayout.WEST,
+			panel);
+		layout.putConstraint(SpringLayout.NORTH, errorLbl, y, SpringLayout.NORTH,
+			panel);
+
+		layout.putConstraint(SpringLayout.NORTH ,cancelBtn, (HEIGHT-70), SpringLayout.NORTH, 
+			panel);
+		layout.putConstraint(SpringLayout.EAST, cancelBtn, -5, SpringLayout.WEST, 
+			submitBtn);
+		layout.putConstraint(SpringLayout.WEST, submitBtn, (WIDTH-100), SpringLayout.WEST, 
+			panel);
+		layout.putConstraint(SpringLayout.NORTH, submitBtn, (HEIGHT-70), SpringLayout.NORTH, 
+			panel);
+
+		return panel;
+	}
+
+	public void question()
+	{// DB
+		qLbl.setText("Quesion " + i);
+
+		radio1.setText("Answer 1");
+
+		radio2.setText("Answer 2");
+
+		radio3.setText("Answer 3");
+
+		radio4.setText("Answer 4");
+	}
+
 	public void actionPerformed(ActionEvent event)
 	{
 		Object source = event.getSource();
@@ -227,13 +382,25 @@ public class QuizFrame extends JFrame implements ActionListener
 		}
 		else if (source == submitBtn)
 		{
-			String question = questionTxt.getText();
-			String ans1 = answer1.getText();
-			String ans2 = answer2.getText();
-			String ans3 = answer3.getText();
-			String ans4 = answer4.getText();
+			if (quiz == null)
+			{
+				String question = questionTxt.getText();
+				String ans1 = answer1.getText();
+				String ans2 = answer2.getText();
+				String ans3 = answer3.getText();
+				String ans4 = answer4.getText();
 
-			// add to array n such
+				// add to array n such
+			}
+			else
+			{
+				// DB
+				String ans1 = radio1.getText();
+				String ans2 = radio2.getText();
+				String ans3 = radio3.getText();
+				String ans4 = radio4.getText();
+			}
+
 			if (event.getActionCommand().equals("Submit"))
 			{
 				dispose();
@@ -245,7 +412,9 @@ public class QuizFrame extends JFrame implements ActionListener
 
 			if (i == size)
 				submitBtn.setText("Submit");
-			
+			// DB
+			if (quiz != null)
+				question();			
 		}
 		else
 			System.out.println("Something Unexpected happened");
