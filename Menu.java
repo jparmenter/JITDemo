@@ -60,16 +60,13 @@ public class Menu extends JFrame
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setResizable(false);
 
-		JTabbedPane jTab = new JTabbedPane();
+		final JTabbedPane jTab = new JTabbedPane();
 		getContentPane().add(jTab);
 
-		/*jTab.addMouseListener(new MouseAdapter() {
-		      public void mouseClicked(MouseEvent mouseEvent) {
-			if (mouseEvent.getClickCount() == 1) {
-				tabChanged();
-			}
-		     }
-		});*/
+		jTab.addChangeListener(new ChangeListener() {
+		public void stateChanged(ChangeEvent e) {
+			//tabChanged();
+		}});
 
 		JPanel hPanel = home("Main Menu");
 		JPanel cPanel = view("Class Menu");
@@ -87,6 +84,11 @@ public class Menu extends JFrame
 			jTab.add("Create Account", cAccountPanel);
 			jTab.add("Create Class", cClassPanel);
 		}
+
+		jTab.addChangeListener(new ChangeListener() {
+		public void stateChanged(ChangeEvent e) {
+			tabChanged();
+		}});
 	}
 
 	public Menu(Class _currClass, User _curr)
@@ -110,6 +112,7 @@ public class Menu extends JFrame
 		JTabbedPane jTab = new JTabbedPane();
 		getContentPane().add(jTab);
 
+
 		JPanel hPanel = home(currClass.getTitle());
 		JPanel qPanel = view("Quiz Menu");
 		JPanel gPanel = grades();
@@ -126,6 +129,12 @@ public class Menu extends JFrame
 		}
 
 		jTab.add("Grade View", gPanel);
+
+		jTab.addChangeListener(new ChangeListener() {
+		public void stateChanged(ChangeEvent e) {
+			tabChanged();
+		}});
+
 
 	}
 
@@ -753,11 +762,7 @@ public class Menu extends JFrame
 		JLabel titleLbl = new JLabel("Grades");
 		gradesPanel.add(titleLbl);
 
-		JLabel qLbl = new JLabel("Quiz");
-		gradesPanel.add(qLbl);
 
-		JLabel gLbl = new JLabel("Grades");
-		gradesPanel.add(gLbl);
 
 		JButton backBtn = new JButton("Main Menu");
 		backBtn.addActionListener(this);
@@ -772,19 +777,28 @@ public class Menu extends JFrame
 		y += inc;
 		x = 100;
 
-		layout.putConstraint(SpringLayout.WEST, qLbl, x , SpringLayout.WEST,
-			gradesPanel);
-		layout.putConstraint(SpringLayout.NORTH, qLbl, y, SpringLayout.NORTH,
-			gradesPanel);
-		layout.putConstraint(SpringLayout.NORTH, gLbl, y, SpringLayout.NORTH,
-			gradesPanel);
-		layout.putConstraint(SpringLayout.WEST, gLbl, 100, SpringLayout.EAST,
-			qLbl);
 
-		y += inc;
 
 		if (curr.getStatus() == 's')
+		{
+			JLabel qLbl = new JLabel("Quiz");
+			gradesPanel.add(qLbl);
+
+			JLabel gLbl = new JLabel("Grades");
+			gradesPanel.add(gLbl);
+
+			layout.putConstraint(SpringLayout.WEST, qLbl, x , SpringLayout.WEST,
+				gradesPanel);
+			layout.putConstraint(SpringLayout.NORTH, qLbl, y, SpringLayout.NORTH,
+				gradesPanel);
+			layout.putConstraint(SpringLayout.NORTH, gLbl, y, SpringLayout.NORTH,
+				gradesPanel);
+			layout.putConstraint(SpringLayout.WEST, gLbl, 100, SpringLayout.EAST,
+				qLbl);
+			y += inc;
+
 			grades(gradesPanel, layout, null);
+		}
 		else
 		{
 			User [] student = new Student[3];
@@ -1012,20 +1026,30 @@ public class Menu extends JFrame
 
 	private void tabChanged()
 	{
-		aErrorLbl.setText("");
-		cPassTxt.setText("");
-		nPassTxt.setText("");
-
-		if (curr.getStatus() == 'a')
+		if (currClass == null)
 		{
-			nameTxt.setText("");
-			userList.setSelectedIndex(0);
-			passTxt.setText("");
-			createAErrorLbl.setText("");
-			courseTxt.setText("");
-			titleTxt.setText("");
-			descTxt.setText("");
-			createCErrorLbl.setText("");
+			aErrorLbl.setText("");
+			cPassTxt.setText("");
+			nPassTxt.setText("");
+
+			if (curr.getStatus() == 'a')
+			{
+				idTxt.setText("");
+				nameTxt.setText("");
+				userList.setSelectedIndex(0);
+				passTxt.setText("");
+				createAErrorLbl.setText("");
+				courseTxt.setText("");
+				titleTxt.setText("");
+				descTxt.setText("");
+				teacherTxt.setText("");
+				createCErrorLbl.setText("");
+			}
+		}
+		else
+		{
+			qTitleTxt.setText("");
+			numList.setSelectedIndex(-1);	
 		}
 	}
 }
