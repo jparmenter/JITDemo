@@ -1,0 +1,55 @@
+TODO:
+
+Menu:
+	Add an Add Student tab for Class Menu
+	IE look at Menu(currClass, curr) and create(title) for info
+	look at the create Account else statement in create(title)
+	Would need to create global variable for TextFields that read Student data
+
+	Change Grades for Class Menu and put it into a view box.. like for view Class/view Quiz
+
+Database:
+
+	View function:
+		List all classes for user (search for classList)
+		also be able to load the class selected in the mouselistener following classList initialization
+		List all quizzes for user (search for quizList)
+		also be able to load the class selected in the mouselistener following classList initialization
+
+	Create User(s)/Class(es):
+		I was thinking that utility logic should add any class added to ALL Admins.
+		AND I figure that any admin created should have ALL classes add to their class array
+
+	Grades (once figured out):
+		Should take a student or the roster of students to send each student to the recursive grades func 
+		that would print each quiz grade (and possibly the cummalitive w/ a NEW label to the right of the students name. 
+
+	Password Change:
+		Change the utility function to return a boolean instead of void. We need to know if the change was successful to 
+		change the error lbl appropriately... Function in Menu is there just need utility change.
+
+
+	QuizFrame:
+		logic to save Quiz in Quiz() function
+		logic to open each question in takeQuiz() function
+
+		Open/Save Question
+		Open/Save Answers
+		Read radioButtons from takeQuiz to save student answers
+		Radio Buttons
+
+				
+
+Test:
+	create User(s); remove comments under Create Account event under actionChanged func
+	create Class(es); remove comments under Create Class event under actionChanged func
+
+	(Add to Phase 3 Testing?)
+	Add logic to check empty text boxes. When a string is allocated for a TextField/PassField/TextArea
+	in the event handlers we need to check if a string is "" then throw an error in the errorLbl. We need
+	to make sure there is nothing created or added that has a string of ""
+
+	Add logic where creating a quiz if a radio button is selected on an empty textfield that it throws an error
+	and doesn't continue to the next question
+
+

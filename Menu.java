@@ -64,11 +64,6 @@ public class Menu extends JFrame
 		final JTabbedPane jTab = new JTabbedPane();
 		getContentPane().add(jTab);
 
-		jTab.addChangeListener(new ChangeListener() {
-		public void stateChanged(ChangeEvent e) {
-			//tabChanged();
-		}});
-
 		JPanel hPanel = home("Main Menu");
 		JPanel cPanel = view("Class Menu");
 		JPanel aPanel = account();
@@ -118,7 +113,6 @@ public class Menu extends JFrame
 		JPanel hPanel = home(currClass.getTitle());
 		JPanel qPanel = view("Quiz Menu");
 		JPanel gPanel = grades();
-		//JScrollPane gPane = grades();
 
 		jTab.add("Home", hPanel);
 		jTab.add("Quiz View", qPanel);
@@ -753,10 +747,6 @@ public class Menu extends JFrame
 		SpringLayout layout = new SpringLayout();
 		gradesPanel.setLayout(layout);
 
-		/*JScrollPane pane = new JScrollPane(gradesPanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-                                       JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-			//pane.setPreferredSize(new Dimension(200, 50));
-*/
 		x = 25;
 		y = 25;
 		int inc = 45;
@@ -779,7 +769,12 @@ public class Menu extends JFrame
 		y += inc;
 		x = 100;
 
+		// Title = Quiz Title: "Quiz 1"
+		// Grade =
 
+		/*//with DB
+			if its a student they are passed to the grades fun to print all of their quiz grades
+		*/
 
 		if (curr.getStatus() == 's')
 		{
@@ -803,6 +798,12 @@ public class Menu extends JFrame
 		}
 		else
 		{
+			//DB
+			/*
+				For teachers/admin the roster of student ids need to be called
+				and run through a loop that opens a temp Student to be sent to the 
+				recursive grades func to print all of their grades
+			*/
 			User [] student = new Student[3];
 			student[0] = new Student(2222, "James", "progit"); 
 			student[1] = new Student(3333, "Alex", "fuck");
@@ -830,41 +831,18 @@ public class Menu extends JFrame
 			gradesPanel);
 
 		return gradesPanel;
-	//	return pane;
 	}
 
 	public JPanel grades(JPanel panel, SpringLayout layout, User student)
 	{
 
-		// Title = Quiz Title: "Quiz 1"
-		// Grade =
 
-		/*//with DB
-		int i = 0;
-		int size = currClass.getNumQuizes();
-		JLabel[] qTitleLbl = new JLable[size];
-		JLabel [] qGradeLbl = new JLabel[size];
-
-		*/
 
 		int i = 0;
 		int size = 4;
 		JLabel [] qTitleLbl = new JLabel[size];
 		JLabel [] qGradeLbl = new JLabel[size];
 
-
-		/* Layout for Admins and Teachers:
-
-		Jeremy:
-			100%
-			67%
-		Kevin
-			543%
-			0%
-		Alex
-			-23%
-			2%
-		*/
 
 		while (i < size)
 		{
