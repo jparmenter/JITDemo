@@ -2,7 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-public class JITDemo extends JFrame 
+public class JITDemo extends JFrame
 {
 	public static void main (String [] args)
 	{

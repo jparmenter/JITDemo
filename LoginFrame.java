@@ -19,35 +19,35 @@ public class LoginFrame extends JFrame implements ActionListener
 		try
 		{
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		}	
+		}
 		catch(Exception e)
 		{
 			e.printStackTrace();
 		}
 
 		setSize(WIDTH, HEIGHT);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setResizable(false);
 		setLocationRelativeTo(null);
-	
+
 		Container contentPane = getContentPane();
 
 		SpringLayout layout = new SpringLayout();
 		contentPane.setLayout(layout);
 
 		JLabel titleLbl = new JLabel("Login Screen");
-		contentPane.add(titleLbl);	
+		contentPane.add(titleLbl);
 
 		JLabel idLbl = new JLabel("Id:");
-		contentPane.add(idLbl);		
+		contentPane.add(idLbl);
 
 		idTxt = new JTextField("", 10);
-		contentPane.add(idTxt);	
+		contentPane.add(idTxt);
 
 		JLabel passLbl = new JLabel("Password:");
 		contentPane.add(passLbl);
 
-		passTxt = new JPasswordField("", 10);	
+		passTxt = new JPasswordField("", 10);
 		contentPane.add(passTxt);
 
 		errorLbl = new JLabel("");
@@ -57,7 +57,7 @@ public class LoginFrame extends JFrame implements ActionListener
 		loginBtn.setMnemonic(KeyEvent.VK_ENTER);
 		loginBtn.addActionListener(this);
 
-		contentPane.add(loginBtn);	
+		contentPane.add(loginBtn);
 
 		JButton closeBtn = new JButton("Close");
 		closeBtn.addActionListener(this);
@@ -66,7 +66,7 @@ public class LoginFrame extends JFrame implements ActionListener
 		layout.putConstraint(SpringLayout.WEST, titleLbl, ((WIDTH/2)-50), SpringLayout.WEST,
 			contentPane);
 		layout.putConstraint(SpringLayout.NORTH, titleLbl, y, SpringLayout.NORTH,
-			contentPane); 
+			contentPane);
 		y += 45;
 
 		layout.putConstraint(SpringLayout.WEST, idLbl, (((WIDTH/2)/2)-50), SpringLayout.WEST,
@@ -98,13 +98,13 @@ public class LoginFrame extends JFrame implements ActionListener
 
 		y += 25;
 
-		layout.putConstraint(SpringLayout.WEST, loginBtn, (WIDTH-75), SpringLayout.WEST, 
+		layout.putConstraint(SpringLayout.WEST, loginBtn, (WIDTH-75), SpringLayout.WEST,
 			contentPane);
-		layout.putConstraint(SpringLayout.NORTH, loginBtn, (HEIGHT-75), SpringLayout.NORTH, 
-			contentPane); 
-		layout.putConstraint(SpringLayout.NORTH ,closeBtn, (HEIGHT-75), SpringLayout.NORTH, 
+		layout.putConstraint(SpringLayout.NORTH, loginBtn, (HEIGHT-75), SpringLayout.NORTH,
 			contentPane);
-		layout.putConstraint(SpringLayout.EAST, closeBtn, -5, SpringLayout.WEST, 
+		layout.putConstraint(SpringLayout.NORTH ,closeBtn, (HEIGHT-75), SpringLayout.NORTH,
+			contentPane);
+		layout.putConstraint(SpringLayout.EAST, closeBtn, -5, SpringLayout.WEST,
 			loginBtn);
 	}
 
@@ -115,7 +115,7 @@ public class LoginFrame extends JFrame implements ActionListener
 		Vector<User> u = new Vector<User>();
 		User admin = new Admin(1234, "Jeremy", "password");
 		User teacher = new Teacher(1111, "Bob", "software");
-		User student = new Student(2222, "James", "progit"); 
+		User student = new Student(2222, "James", "progit");
 		//Class nClass = new Class(272111, "CSE 110 Intro to Java", "This class teaches you java", teacher);
 		u.add(admin);
 		u.add(student);
@@ -142,9 +142,9 @@ public class LoginFrame extends JFrame implements ActionListener
 				int id = Integer.parseInt(idTxt.getText());
 				String pass = new String(passTxt.getPassword());
 				User temp;
-				/*/ With DB
+				// With DB
 				jaklUtilities utility = new jaklUtilities();
-				
+
 				temp = utility.openUser(id);
 
 				if ((temp != null) && (pass.compareTo(temp.getPass()) == 0))
@@ -152,7 +152,7 @@ public class LoginFrame extends JFrame implements ActionListener
 				else
 					errorLbl.setText("Id or Pass or incorrect");
 
-				*/// w/o DB
+				/* w/o DB
 				if (u != null)
 					for (int i = 0; i < u.size(); i++)
 					{
@@ -160,7 +160,7 @@ public class LoginFrame extends JFrame implements ActionListener
 						if ((temp.getId() == id) && (pass.compareTo(temp.getPass()) == 0))
 							curr = temp;
 					}
-			//*/	
+			//*/
 				if (curr != null)
 				{
 					dispose();
@@ -172,7 +172,7 @@ public class LoginFrame extends JFrame implements ActionListener
 			}
 			catch (Exception ex)
 			{
-				errorLbl.setText("Id or Pass or incorrect");	
+				errorLbl.setText("Id or Pass or incorrect");
 			}
 		}
 		else
@@ -182,6 +182,6 @@ public class LoginFrame extends JFrame implements ActionListener
 			System.exit(0);
 		}
 		else
-			System.out.println("Unexpected error.");	
+			System.out.println("Unexpected error.");
 	}
 }
