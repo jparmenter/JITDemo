@@ -4,8 +4,8 @@ import java.sql.*;
 
 public class jaklUtilities
 {
-	private String url = "jdbc:postgresql://68.98.104.148:5432/jitt";
-
+	private String url = "jdbc:postgresql://70.190.95.77:5432/jitt";
+	public int currClass = 0;
 	public jaklUtilities()
 	{
 		try
@@ -256,43 +256,91 @@ public class jaklUtilities
 
 	}
 
-/*
-	public void showClasses(int teacherId)
+	public int getNumClasses(int id)
 	{
+		int i = 0;
 		try
 		{
 		   Connection conn = DriverManager.getConnection(url,"postgres","jakl");
-
 		   Statement stmt = conn.createStatement();
-		   ResultSet rs = stmt.executeQuery("SELECT * FROM \"class\" WHERE id=" + teacherId);
-		   ResultSetMetaData rsmd = rs.getMetaData();
-		   int numberOfColumns = rsmd.getColumnCount();
-		   int rowCount = 1;
+		   ResultSet count = stmt.executeQuery("SELECT array_upper(class, 1) FROM \"user\" WHERE id=" + id);
+		   count.next();
+		   i = count.getInt(1);
+		   count.close();
+		   conn.close();
+		   return i;
+	   }
+	   catch(Exception e)
+	   {
+		   System.out.println(e.getMessage());
+		   return 0;
+	   }
+   }
 
+	public String[] showClasses(int id)
+	{
+		int i = 0;
+		try
+		{
+		   Connection conn = DriverManager.getConnection(url,"postgres","jakl");
+		   Statement stmt = conn.createStatement();
+		   ResultSet counting = stmt.executeQuery("SELECT array_upper(class, 1) FROM \"user\" WHERE id=" + id);
+		   while (counting.next())
+		   {
+		   	   i = counting.getInt(1);
+		   }
+		   counting.close();
+		   ResultSet rs = stmt.executeQuery("SELECT array_to_string(ARRAY[class], ',') from \"user\" WHERE id=" + id);
+
+		   String[] classes = new String[i];
 		   	while (rs.next())
 		   	{
-		   		System.out.println("Line " + rowCount + ":");
-		   		for (int i = 1; i <= numberOfColumns; i++)
-		   		{
-		   			System.out.print("   Col " + i + ":  ");
-		   			System.out.println(rs.getString(i));
-		   		}
-
-		   		System.out.println("");
-		   		rowCount++;
+				classes = getQuizArray(rs.getString(1));
 			}
-
 			rs.close();
 			conn.close();
+			return classes;
 		}
 		catch (Exception e)
 		{
 			System.out.println("FFFAAIIIILLLLZZZZZZZZZZ");
 			System.out.println(e.getMessage());
+			return null;
 		}
 	}
 
-*/
+	public String[] showQuizes(int classId)
+		{
+			int i = 0;
+			try
+			{
+			   Connection conn = DriverManager.getConnection(url,"postgres","jakl");
+			   Statement stmt = conn.createStatement();
+			   ResultSet counting = stmt.executeQuery("SELECT array_upper(quizids, 1) FROM \"class\" WHERE id=" + classId);
+			   while (counting.next())
+			   {
+			   	   i = counting.getInt(1);
+			   }
+			   counting.close();
+			   ResultSet rs = stmt.executeQuery("SELECT array_to_string(ARRAY[quizids], ',') from \"class\" WHERE id=" + classId);
+
+			   String[] quizs = new String[i];
+			   	while (rs.next())
+			   	{
+					quizs = getQuizArray(rs.getString(1));
+				}
+				rs.close();
+				conn.close();
+				return quizs;
+			}
+			catch (Exception e)
+			{
+				System.out.println("FFFAAIIIILLLLZZZZZZZZZZ");
+				System.out.println(e.getMessage());
+				return null;
+			}
+	}
+
 	public void addClass(int classId, int id)
 	{
 		try
@@ -333,17 +381,18 @@ public class jaklUtilities
 			  conn.close();
 			  return false;
 		   }
-		}
+	   }
 
 		catch (Exception e)
 		{
 			System.out.println(e.getMessage());
-			return false;
 		}
+		return false;
 	}
 
 public Quiz openQuiz(int quizId)
 		{
+			//System.out.println("HERESZFDFKLDSHSHDHGJLKSD");
 			int tempQuestionNumber;
 			String[] tempQuestion = null;
 			String[] tempAnswer1 = null;
@@ -400,7 +449,7 @@ public Quiz openQuiz(int quizId)
 			   }
 			   ans4.close();
 
-			   ResultSet corr = stmt.executeQuery("SELECT array_to_string(ARRAY[correct], ',') from \"quiz\" WHERE id=" + quizId);
+			   ResultSet corr = stmt.executeQuery("SELECT array_to_string(ARRAY[correctanswer], ',') from \"quiz\" WHERE id=" + quizId);
 			   while (corr.next())
 			   {
 				   tempCorrectAnswer = getQuizArray(corr.getString(1));
@@ -420,20 +469,93 @@ public Quiz openQuiz(int quizId)
 
 		}
 
-		public void writeQuiz(int quizId, String[] questions, String[] answers1, String[] answers2, String[] answers3, String[] answers4, String[] correctAnswers, int classId)
+		public void writeQuiz(int quizId, String[] questions, String[] answers1, String[] answers2, String[] answers3, String[] answers4, int[] correctAnswers, int classId)
 		{
 				try
 				{
 					Connection conn = DriverManager.getConnection(url,"postgres","jakl");
 					Statement st = conn.createStatement();
-					st.executeUpdate("INSERT INTO \"quiz\"\nVALUES\n(" + quizId + ", '{" + sArrayToString(questions) + "}', '{" + sArrayToString(answers1)+ "}', '{" + sArrayToString(answers2) + "}', '{" + sArrayToString(answers3) + "}', '{" + sArrayToString(answers4) + "}', '{" + sArrayToString(correctAnswers) + "}')");
+					st.executeUpdate("INSERT INTO \"quiz\"\nVALUES\n(" + quizId + ", '{" + sArrayToString(questions) + "}', '{" + sArrayToString(answers1)+ "}', '{" + sArrayToString(answers2) + "}', '{" + sArrayToString(answers3) + "}', '{" + sArrayToString(answers4) + "}', '{" + intArrayToString(correctAnswers) + "}')");
 					Statement st1 = conn.createStatement();
 					st1.executeUpdate("UPDATE \"class\" SET quizids = quizids || ARRAY["+ quizId + "] WHERE id=" + classId);
+
+					System.out.println("success!");
+					conn.close();
 				}
 				catch (Exception e)
 				{
 					System.out.println(e.getMessage());
 				}
+		}
+
+		public int[] getCorrectAnswerArray(int quizId)
+		{
+			int i = 0;
+			try
+			{
+				Connection conn = DriverManager.getConnection(url, "postgres","jakl");
+				Statement st = conn.createStatement();
+				ResultSet count = st.executeQuery("SELECT COUNT(correctanswer) FROM \"quiz\" WHERE id =" + quizId);
+				ResultSet answers = st.executeQuery("SELECT array_to_string(ARRAY[correctanswer], ',') from \"quiz\" WHERE id=" + quizId);
+				count.next();
+				i = count.getInt(1);
+				int[] correctAnswers = new int[i];
+				count.close();
+				while (answers.next())
+				{
+					correctAnswers = getClassArray(answers.getString(1));
+				}
+				answers.close();
+				conn.close();
+				return correctAnswers;
+			}
+			catch (Exception e)
+			{
+				return null;
+			}
+		}
+
+		public String getQuestion(int index, int quizId)
+		{
+			String question = null;
+			try
+			{
+				Connection conn = DriverManager.getConnection(url, "postgres","jakl");
+				Statement st = conn.createStatement();
+				ResultSet quest = st.executeQuery("SELECT question[" + index + "] FROM \"quiz\" WHERE id= " + quizId);
+				quest.next();
+				question = quest.getString(1);
+				quest.close();
+				conn.close();
+				return question;
+			}
+			catch(Exception e)
+			{
+				//System.out.println("rawrrr");
+				System.out.println(e.getMessage());
+				return null;
+			}
+		}
+
+		public String getAnswer(int questIndex, int ansIndex, int quizId)
+		{
+			String answer = null;
+			try
+			{
+				Connection conn = DriverManager.getConnection(url, "postgres","jakl");
+				Statement st = conn.createStatement();
+				ResultSet ans = st.executeQuery("SELECT answer" + ansIndex + "[" + questIndex + "] FROM \"quiz\" WHERE id= " + quizId);
+				ans.next();
+				answer = ans.getString(1);
+				ans.close();
+				conn.close();
+				return answer;
+			}
+			catch(Exception e)
+			{
+				System.out.println(e.getMessage());
+				return null;
+			}
 		}
 
 
@@ -496,9 +618,87 @@ public Quiz openQuiz(int quizId)
 		return s;
 	}
 
+
+	public void sendClassId(int id)
+	{
+		currClass = id;
+	}
+
+	public int getClassId()
+	{
+		return currClass;
+	}
+
+	public String getUserName(int userId)
+	{
+		String name = null;
+		try
+		{
+			Connection conn = DriverManager.getConnection(url, "postgres","jakl");
+			Statement st = conn.createStatement();
+			ResultSet uName = st.executeQuery("SELECT username FROM \"user\" WHERE id= " + userId);
+			uName.next();
+			name = uName.getString(1);
+			uName.close();
+			conn.close();
+			return name;
+		}
+		catch(Exception e)
+		{
+			//System.out.println("rawrrr");
+			System.out.println(e.getMessage());
+			return null;
+		}
+	}
+
+	public String intArrayToString(int[] temp)
+	{
+		String s = "";
+
+		for(int i = 0; i < temp.length; i++)
+		{
+			s = s.concat(temp[i] + ", ");
+
+		}
+		s = s.substring(0, s.length()-2);
+
+
+		return s;
+
+	}
+
+
+
+	/*public int[] getRoster(int classId)
+	{
+			int i = 0;
+			try
+			{
+				Connection conn = DriverManager.getConnection(url, "postgres","jakl");
+				Statement st = conn.createStatement();
+				ResultSet count = st.executeQuery("SELECT COUNT(correctanswer) FROM \"user\" WHERE id =" + classId);
+				count.next();
+				i = count.getInt(1);
+				int[] correctAnswers = new int[i];
+				count.close();
+				ResultSet users = st.executeQuery("SELECT array_to_string(ARRAY[correctanswer], ',') from \"quiz\" WHERE id=" + quizId);
+				while (answers.next())
+				{
+					correctAnswers = getClassArray(answers.getString(1));
+				}
+				answers.close();
+				conn.close();
+				return correctAnswers;
+			}
+			catch (Exception e)
+			{
+				return null;
+			}
+
+	}*/
+
+
 }
-
-
 
 
 

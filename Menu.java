@@ -9,8 +9,6 @@ public class Menu extends JFrame
 {
 	public static int WIDTH = 600;
 	public static int HEIGHT = 400;
-	private int x;
-	private int y;
 	public static jaklUtilities utility;
 	private final User curr;
 	private final Class currClass;
@@ -40,9 +38,13 @@ public class Menu extends JFrame
 	private JTextField qTitleTxt;
 	private JComboBox numList;
 
+	// Used for create Students
+	private JTextField studentTxt;
+	private JLabel createSErrorLbl;
+
 	public Menu(User _curr)
 	{
-		super("Just In Time Learning");
+		super("Just In Time Teaching");
 		currClass = null;
 		curr = _curr;
 		utility = new jaklUtilities();
@@ -61,8 +63,16 @@ public class Menu extends JFrame
 		setResizable(false);
 		setLocationRelativeTo(null);
 
-		final JTabbedPane jTab = new JTabbedPane();
+		JTabbedPane jTab = new JTabbedPane();
 		getContentPane().add(jTab);
+
+		/*jTab.addMouseListener(new MouseAdapter() {
+		      public void mouseClicked(MouseEvent mouseEvent) {
+			if (mouseEvent.getClickCount() == 1) {
+				tabChanged();
+			}
+		     }
+		});*/
 
 		JPanel hPanel = home("Main Menu");
 		JPanel cPanel = view("Class Menu");
@@ -80,16 +90,11 @@ public class Menu extends JFrame
 			jTab.add("Create Account", cAccountPanel);
 			jTab.add("Create Class", cClassPanel);
 		}
-
-		jTab.addChangeListener(new ChangeListener() {
-		public void stateChanged(ChangeEvent e) {
-			tabChanged();
-		}});
 	}
 
 	public Menu(Class _currClass, User _curr)
 	{
-		super("Just In Time Learning");
+		super("Just In Time Teaching");
 		currClass = _currClass;
 		curr = _curr;
 
@@ -104,11 +109,11 @@ public class Menu extends JFrame
 
 		setSize(WIDTH, HEIGHT);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setResizable(false);
 		setLocationRelativeTo(null);
 
 		JTabbedPane jTab = new JTabbedPane();
 		getContentPane().add(jTab);
-
 
 		JPanel hPanel = home(currClass.getTitle());
 		JPanel qPanel = view("Quiz Menu");
@@ -122,15 +127,11 @@ public class Menu extends JFrame
 		{
 			JPanel cQuizPanel = create("Create Quiz");
 			jTab.add("Create Quiz", cQuizPanel);
+			JPanel cCreatePanel = create("Add Student");
+			jTab.add("Add Student", cCreatePanel);
 		}
 
 		jTab.add("Grade View", gPanel);
-
-		jTab.addChangeListener(new ChangeListener() {
-		public void stateChanged(ChangeEvent e) {
-			tabChanged();
-		}});
-
 
 	}
 
@@ -140,8 +141,8 @@ public class Menu extends JFrame
 		SpringLayout layout = new SpringLayout();
 		createPanel.setLayout(layout);
 
-		x = 25;
-		y = 25;
+		int x = 25;
+		int y = 25;
 		int inc = 45;
 
 		JLabel createLbl = new JLabel(title);
@@ -357,9 +358,57 @@ public class Menu extends JFrame
 			layout.putConstraint(SpringLayout.NORTH, createAErrorLbl, y, SpringLayout.NORTH,
 				createPanel);
 		}
+		else if (title.equals("Add Student"))
+		{
+			JLabel id = new JLabel("Student ID: ");
+			createPanel.add(id);
+
+			studentTxt = new JTextField("", 10);
+			createPanel.add(studentTxt);
+
+
+			createSErrorLbl = new JLabel("");
+			createPanel.add(createSErrorLbl);
+
+			JButton addBtn = new JButton("Add");
+			addBtn.addActionListener(this);
+			createPanel.add(addBtn);
+
+			JButton logoutBtn = new JButton("Logout");
+			logoutBtn.addActionListener(this);
+			createPanel.add(logoutBtn);
+
+			layout.putConstraint(SpringLayout.WEST, id, (((WIDTH/2)/2)-50), SpringLayout.WEST,
+				createPanel);
+			layout.putConstraint(SpringLayout.NORTH, id, y, SpringLayout.NORTH,
+				createPanel);
+			layout.putConstraint(SpringLayout.NORTH, studentTxt, y, SpringLayout.NORTH,
+				createPanel);
+			layout.putConstraint(SpringLayout.WEST, studentTxt, 20, SpringLayout.EAST,
+				id);
+
+			layout.putConstraint(SpringLayout.NORTH ,addBtn, (HEIGHT-110), SpringLayout.NORTH,
+				createPanel);
+			layout.putConstraint(SpringLayout.EAST, addBtn, -5, SpringLayout.WEST,
+				logoutBtn);
+
+			y += inc;
+
+			layout.putConstraint(SpringLayout.WEST, logoutBtn, (WIDTH-90), SpringLayout.WEST,
+				createPanel);
+			layout.putConstraint(SpringLayout.NORTH, logoutBtn, (HEIGHT-110), SpringLayout.NORTH,
+			createPanel);
+
+			layout.putConstraint(SpringLayout.WEST, createSErrorLbl, ((WIDTH/2)-50), SpringLayout.WEST,
+				createPanel);
+			layout.putConstraint(SpringLayout.NORTH, createSErrorLbl, y, SpringLayout.NORTH,
+			createPanel);
+
+
+		}
 		else
 		{
-			JLabel titleLbl = new JLabel("Quiz Title:");
+			JLabel titleLbl = new JLabel("Quiz ID:");
 			createPanel.add(titleLbl);
 
 			qTitleTxt = new JTextField("", 15);
@@ -389,7 +438,6 @@ public class Menu extends JFrame
 			JButton backBtn = new JButton("Main Menu");
 			backBtn.addActionListener(this);
 			createPanel.add(backBtn);
-
 
 
 			layout.putConstraint(SpringLayout.WEST, titleLbl, (((WIDTH/2/2)-50)), SpringLayout.WEST,
@@ -435,8 +483,8 @@ public class Menu extends JFrame
 		SpringLayout layout = new SpringLayout();
 		aPanel.setLayout(layout);
 
-		x = 25;
-		y = 25;
+		int x = 25;
+		int y = 25;
 		int inc = 45;
 
 		JLabel accountLbl = new JLabel("Account Mangement");
@@ -535,8 +583,8 @@ public class Menu extends JFrame
 		SpringLayout layout = new SpringLayout();
 		cPanel.setLayout(layout);
 
-		x = 25;
-		y = 25;
+		int x = 25;
+		int y = 25;
 		int inc = 45;
 
 		JLabel titleLbl = new JLabel(title);
@@ -551,22 +599,15 @@ public class Menu extends JFrame
 
 		if (title.equals("Class Menu"))
 		{
-			/* //WITH DB
-				int tempSize = curr.getNumClasses();
-				int list[] = null;
-
-				for(int j = 0; j < tempSize; j++)
-				{
-					list[j] = curr.showClassId(j);
-				}
-			*/
-
+			int tempSize = utility.getNumClasses(curr.getId());
+			String list[] = utility.showClasses(curr.getId());
+			/*
 			String list[] = {"22722 CSE 340 Intro to Software Engineering",
 				"232424 CSE 205 Java Programming",
 				"235353 CSE 240 Into to PL",
 				"345454 CSE 310 Data Structs",
 				"334433 CSE 205 Java Programming",
-				"553355 CSE 120 Digital Design"};
+				"553355 CSE 120 Digital Design"}; */
 
 			JList classList = new JList(list);
 			classList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -584,6 +625,9 @@ public class Menu extends JFrame
 				  int index = theList.locationToIndex(mouseEvent.getPoint());
 				  if (index >= 0) {
 				    Object o = theList.getModel().getElementAt(index);
+				    String strId = o.toString();
+				    int id = Integer.parseInt(strId);
+				    /*
 				    char [] input = o.toString().toCharArray();
 				    int i = 0;
 				    char c = input[i];
@@ -596,12 +640,16 @@ public class Menu extends JFrame
 					c = input[i];
 				    }
 
+
 				    int id = Integer.parseInt(s);
 				    System.out.println("Double-clicked on: " + id);
+				    System.out.println(id);
 
 				    User teacher = new Teacher(1111, "Bob", "software");
 				    Class tempClass = new Class(272111, "CSE 110 Intro to Java", "This class teaches you java", teacher.getId());
-				    // Class tempClass = utility.openClass(option);
+				    */
+				    utility.sendClassId(id);
+				    Class tempClass = utility.openClass(id);
 				    dispose();
 				    Menu classView = new Menu(tempClass, curr);
 				    classView.setVisible(true);
@@ -612,7 +660,7 @@ public class Menu extends JFrame
 		}
 		else
 		{
-			String list[] = {"Quiz 1", "Quiz 2", "Quiz 3"};
+			String list[] = utility.showQuizes(utility.getClassId());
 
 			JList quizList = new JList(list);
 			quizList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -628,26 +676,25 @@ public class Menu extends JFrame
 				if (mouseEvent.getClickCount() == 2) {
 				  int index = theList.locationToIndex(mouseEvent.getPoint());
 				  if (index >= 0) {
-				        Object o = theList.getModel().getElementAt(index);
-				        String s = o.toString();
-			
-				        //System.out.println("Double-clicked on: " + s);
-					dispose();
-					String [] title = {"Hello", "GoodBye"};
-					String [] ans = {"ans", "ans"};
-					Quiz quiz = new Quiz(123,  title, ans, ans, ans, ans, ans);
-					QuizFrame gui = new QuizFrame(quiz, currClass, curr);
-					gui.setVisible(true);					  
-				    }
+				    Object o = theList.getModel().getElementAt(index);
+				    String s = o.toString();
+					int id = Integer.parseInt(s);
+				    System.out.println("Double-clicked on: " + s);
+				    dispose();
+				    Quiz quiz = utility.openQuiz(id);
+				    QuizFrame gui = new QuizFrame(quiz, currClass, curr);
+				    gui.setVisible(true);
+
+				  }
 				}
 			      }
 			});
 
 		}
 
-		JButton backBtn = new JButton("Main Menu");
-		backBtn.addActionListener(this);
-		cPanel.add(backBtn);
+		JButton logoutBtn = new JButton("Logout");
+		logoutBtn.addActionListener(this);
+		cPanel.add(logoutBtn);
 
 		layout.putConstraint(SpringLayout.WEST, titleLbl, x, SpringLayout.WEST,
 			cPanel);
@@ -668,9 +715,9 @@ public class Menu extends JFrame
 		layout.putConstraint(SpringLayout.NORTH, pane, y, SpringLayout.NORTH,
 			cPanel);
 
-		layout.putConstraint(SpringLayout.WEST, backBtn, (WIDTH-115), SpringLayout.WEST,
+		layout.putConstraint(SpringLayout.WEST, logoutBtn, (WIDTH-90), SpringLayout.WEST,
 			cPanel);
-		layout.putConstraint(SpringLayout.NORTH, backBtn, (HEIGHT-110), SpringLayout.NORTH,
+		layout.putConstraint(SpringLayout.NORTH, logoutBtn, (HEIGHT-110), SpringLayout.NORTH,
 			cPanel);
 
 		return cPanel;
@@ -682,8 +729,8 @@ public class Menu extends JFrame
 		SpringLayout layout = new SpringLayout();
 		hPanel.setLayout(layout);
 
-		x = 25;
-		y = 25;
+		int x = 25;
+		int y = 25;
 		int inc = 45;
 
 		JLabel homeLbl = new JLabel(home);
@@ -741,20 +788,26 @@ public class Menu extends JFrame
 		return hPanel;
 	}
 
+
+
 	public JPanel grades()
 	{
 		JPanel gradesPanel = new JPanel();
 		SpringLayout layout = new SpringLayout();
 		gradesPanel.setLayout(layout);
 
-		x = 25;
-		y = 25;
+		int x = 25;
+		int y = 25;
 		int inc = 45;
 
 		JLabel titleLbl = new JLabel("Grades");
 		gradesPanel.add(titleLbl);
 
+		JLabel qLbl = new JLabel("Quiz");
+		gradesPanel.add(qLbl);
 
+		JLabel gLbl = new JLabel("Grades");
+		gradesPanel.add(gLbl);
 
 		JButton backBtn = new JButton("Main Menu");
 		backBtn.addActionListener(this);
@@ -769,61 +822,18 @@ public class Menu extends JFrame
 		y += inc;
 		x = 100;
 
-		// Title = Quiz Title: "Quiz 1"
-		// Grade =
+		layout.putConstraint(SpringLayout.WEST, qLbl, x , SpringLayout.WEST,
+			gradesPanel);
+		layout.putConstraint(SpringLayout.NORTH, qLbl, y, SpringLayout.NORTH,
+			gradesPanel);
+		layout.putConstraint(SpringLayout.NORTH, gLbl, y, SpringLayout.NORTH,
+			gradesPanel);
+		layout.putConstraint(SpringLayout.WEST, gLbl, 100, SpringLayout.EAST,
+			qLbl);
 
-		/*//with DB
-			if its a student they are passed to the grades fun to print all of their quiz grades
-		*/
+		y += inc;
 
-		if (curr.getStatus() == 's')
-		{
-			JLabel qLbl = new JLabel("Quiz");
-			gradesPanel.add(qLbl);
-
-			JLabel gLbl = new JLabel("Grades");
-			gradesPanel.add(gLbl);
-
-			layout.putConstraint(SpringLayout.WEST, qLbl, x , SpringLayout.WEST,
-				gradesPanel);
-			layout.putConstraint(SpringLayout.NORTH, qLbl, y, SpringLayout.NORTH,
-				gradesPanel);
-			layout.putConstraint(SpringLayout.NORTH, gLbl, y, SpringLayout.NORTH,
-				gradesPanel);
-			layout.putConstraint(SpringLayout.WEST, gLbl, 100, SpringLayout.EAST,
-				qLbl);
-			y += inc;
-
-			grades(gradesPanel, layout, null);
-		}
-		else
-		{
-			//DB
-			/*
-				For teachers/admin the roster of student ids need to be called
-				and run through a loop that opens a temp Student to be sent to the 
-				recursive grades func to print all of their grades
-			*/
-			User [] student = new Student[3];
-			student[0] = new Student(2222, "James", "progit"); 
-			student[1] = new Student(3333, "Alex", "fuck");
-			student[2] = new Student(4444, "Kevin", "Cock");
-
-			for (int i = 0; i < student.length; i++)
-			{
-				JLabel nLbl = new JLabel(student[i].getName());
-				gradesPanel.add(nLbl);
-
-				layout.putConstraint(SpringLayout.WEST, nLbl, x , SpringLayout.WEST,
-					gradesPanel);
-				layout.putConstraint(SpringLayout.NORTH, nLbl, y, SpringLayout.NORTH,
-					gradesPanel);
-				
-				y += inc;
-
-				gradesPanel = grades(gradesPanel, layout, student[i]);
-			}
-		}
+		grades(gradesPanel, layout, null, x, y);
 
 		layout.putConstraint(SpringLayout.WEST, backBtn, (WIDTH-115), SpringLayout.WEST,
 			gradesPanel);
@@ -833,16 +843,39 @@ public class Menu extends JFrame
 		return gradesPanel;
 	}
 
-	public JPanel grades(JPanel panel, SpringLayout layout, User student)
+
+
+
+
+public JPanel grades(JPanel panel, SpringLayout layout, User student, int x, int y)
 	{
 
+		// Title = Quiz Title: "Quiz 1"
+		// Grade =
 
-
+		//with DB
 		int i = 0;
-		int size = 4;
-		JLabel [] qTitleLbl = new JLabel[size];
+		int size = currClass.getNumQuizes();
+		JLabel[] qTitleLbl = new JLabel[size];
 		JLabel [] qGradeLbl = new JLabel[size];
 
+		/*Layout for Admins and Teachers:
+
+		Jeremy:
+			100%
+			67%
+		Kevin
+			543%
+			0%
+		Alex
+			-23%
+			2%
+		*/
+
+		if(curr.getStatus() == 't');
+		{
+
+		i = 0;
 
 		while (i < size)
 		{
@@ -852,7 +885,7 @@ public class Menu extends JFrame
 			qGradeLbl[i] = new JLabel("100%");
 			panel.add(qGradeLbl[i]);
 
-			layout.putConstraint(SpringLayout.WEST, qTitleLbl[i], (x+50) , SpringLayout.WEST,
+			layout.putConstraint(SpringLayout.WEST, qTitleLbl[i], x , SpringLayout.WEST,
 				panel);
 			layout.putConstraint(SpringLayout.NORTH, qTitleLbl[i], y, SpringLayout.NORTH,
 				panel);
@@ -864,8 +897,38 @@ public class Menu extends JFrame
 			i++;
 		}
 
+		}
+
+		/*int i = 0;
+		int size = 4;
+		JLabel [] qTitleLbl = new JLabel[size];
+		JLabel [] qGradeLbl = new JLabel[size];
+
+		while (i < size)
+		{
+			qTitleLbl[i] = new JLabel("Quiz");
+			panel.add(qTitleLbl[i]);
+
+			qGradeLbl[i] = new JLabel("100%");
+			panel.add(qGradeLbl[i]);
+
+			layout.putConstraint(SpringLayout.WEST, qTitleLbl[i], x , SpringLayout.WEST,
+				panel);
+			layout.putConstraint(SpringLayout.NORTH, qTitleLbl[i], y, SpringLayout.NORTH,
+				panel);
+			layout.putConstraint(SpringLayout.NORTH, qGradeLbl[i], y, SpringLayout.NORTH,
+				panel);
+			layout.putConstraint(SpringLayout.WEST, qGradeLbl[i], x, SpringLayout.EAST,
+				qTitleLbl[i]);
+			y += 45;   //CHANGE
+			i++;
+		}*/
+
 		return panel;
 	}
+
+
+
 
 	public void actionPerformed(ActionEvent e)
 	{
@@ -915,7 +978,7 @@ public class Menu extends JFrame
 				{
 					pass = passTxt.getText();
 					Admin admin = new Admin(id, name, pass);
-					//utility.writeAdmin(id, name, pass, 'a');
+					utility.writeAdmin(id, name, pass, 'a');
 					createAErrorLbl.setText("Admin Created");
 
 				}
@@ -929,13 +992,13 @@ public class Menu extends JFrame
 					if (combo.equals("Teacher"))
 					{
 						Teacher teacher = new Teacher(id, name, pass);
-						//utility.writeTeacher(id, name, pass, 't');
+						utility.writeTeacher(id, name, pass, 't');
 						createAErrorLbl.setText("Teacher Created");
 					}
 					else
 					{
 						Student student = new Student(id, name, pass);
-						//utility.writeStudent(id, name, pass, 's'); //Write student should change
+						utility.writeStudent(id, name, pass, 's'); //Write student should change
 						createAErrorLbl.setText("Student Created");
 					}
 				}
@@ -944,6 +1007,22 @@ public class Menu extends JFrame
 			{
 				createAErrorLbl.setText("Incorrect Input");
 			}
+		}
+		else if (buttonString.equals("Add"))
+		{
+			try {
+						int id = Integer.parseInt(studentTxt.getText());
+
+						utility.addClass(currClass.getId(), id);
+
+						createSErrorLbl.setText("Student Created");
+
+
+				}
+				catch (Exception ex)
+				{
+					createSErrorLbl.setText("Incorrect Input");
+				}
 		}
 		else if (buttonString.equals("Main Menu"))
 		{
@@ -956,10 +1035,10 @@ public class Menu extends JFrame
 			Object selected = numList.getSelectedItem();
 			int num = Integer.parseInt(selected.toString());
 
-			String quiz = qTitleTxt.getText();
+			int tempQuizId = Integer.parseInt(qTitleTxt.getText());
 
 			dispose();
-			QuizFrame q = new  QuizFrame(quiz, num, currClass, curr);
+			QuizFrame q = new QuizFrame(tempQuizId, num, currClass, curr); // 5 == quiz changed
 			q.setVisible(true);
 		}
 		else
@@ -974,13 +1053,13 @@ public class Menu extends JFrame
 			String newPass = new String(nPassTxt.getPassword());
 
 			// DB
-			// utility.changePass(curr.getId(), curr.getName(), oldPass, newPass);
+			 boolean flag = utility.changePass(curr.getId(), curr.getName(), oldPass, newPass);
 
 			// Needs a boolean to notify if change was successful or not
-			// if (flag)
+			if (flag)
 			aErrorLbl.setText("Password Change Successful!");
-			//else
-				//aErrorLbl.setText("Incorrect Password");
+			else
+				aErrorLbl.setText("Incorrect Password");
 		}
 		catch (Exception ex)
 		{
@@ -1006,30 +1085,20 @@ public class Menu extends JFrame
 
 	private void tabChanged()
 	{
-		if (currClass == null)
-		{
-			aErrorLbl.setText("");
-			cPassTxt.setText("");
-			nPassTxt.setText("");
+		aErrorLbl.setText("");
+		cPassTxt.setText("");
+		nPassTxt.setText("");
 
-			if (curr.getStatus() == 'a')
-			{
-				idTxt.setText("");
-				nameTxt.setText("");
-				userList.setSelectedIndex(0);
-				passTxt.setText("");
-				createAErrorLbl.setText("");
-				courseTxt.setText("");
-				titleTxt.setText("");
-				descTxt.setText("");
-				teacherTxt.setText("");
-				createCErrorLbl.setText("");
-			}
-		}
-		else
+		if (curr.getStatus() == 'a')
 		{
-			qTitleTxt.setText("");
-			numList.setSelectedIndex(-1);	
+			nameTxt.setText("");
+			userList.setSelectedIndex(0);
+			passTxt.setText("");
+			createAErrorLbl.setText("");
+			courseTxt.setText("");
+			titleTxt.setText("");
+			descTxt.setText("");
+			createCErrorLbl.setText("");
 		}
 	}
 }
