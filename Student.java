@@ -30,6 +30,25 @@ public class Student extends User
 	//}
 
 	// Need to know if the change pass was successful
+
+	public int[] getClassList()
+	{
+		int[] tempArray = new int[classList.size()];
+
+		for(int i = 0; i < classList.size(); i++)
+		{
+			tempArray[i] = classList.get(i);
+		}
+
+		return tempArray;
+	}
+
+	public int getNumClasses()
+	{
+		return classList.size();
+	}
+
+
 	public boolean changePass(String oldPass, String newPass)
 	{
 

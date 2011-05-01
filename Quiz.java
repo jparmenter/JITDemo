@@ -9,10 +9,10 @@ public class Quiz
 	private String[] answer2;
 	private String[] answer3;
 	private String[] answer4;
-	private String[] correctAnswer;
+	private int[] correctAnswer;
 
 	public Quiz(int temp_quizId, String[] temp_question, String[] temp_ans1, String[] temp_ans2,
-					String[] temp_ans3, String[] temp_ans4, String[] temp_correctAnswer)
+					String[] temp_ans3, String[] temp_ans4, int[] temp_correctAnswer)
 	{
 		quizId = temp_quizId;
 		question = temp_question;
@@ -43,6 +43,11 @@ public class Quiz
 	{
 		return question;
 	}*/
+
+	public int[] getCorrectAnswers()
+	{
+		return correctAnswer;
+	}
 
 	public static int numQuestions()
 	{
@@ -84,11 +89,11 @@ public class Quiz
 		return index + ":\t" + question[index] + "\n\t" + answer1[index] + "\n\t" + answer2[index] + "\n\t" + answer3[index] + "\n\t" + answer4[index];
 	}
 
-	public boolean checkAnswer(String userAnswer, int index)
+	/*public boolean checkAnswer(String userAnswer, int index)
 	{
 		if(correctAnswer[index].equals(userAnswer))
 			return true;
 		else
 			return false;
-	}
+	}*/
 }

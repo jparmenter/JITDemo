@@ -30,6 +30,7 @@ public class QuizFrame extends JFrame implements ActionListener
 	private JTextField answer4;
 	private JLabel qLbl;
 	private JLabel errorLbl;
+	private JPanel takeQuizDisplay;
 
 	private static Object source;
 	private static String[] questions;
@@ -80,6 +81,8 @@ public class QuizFrame extends JFrame implements ActionListener
 		title = quiz.getId();
 		size = quiz.numQuestions(); // Amount of Quiz Questions
 		i = 0;
+		System.out.println(quiz.getId() + " " + quiz.getAnswer1(0));
+		correctAnswers = quiz.getCorrectAnswers();
 
 
 		try
@@ -95,8 +98,9 @@ public class QuizFrame extends JFrame implements ActionListener
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setResizable(false);
 		setLocationRelativeTo(null);
+		takeQuizDisplay = takeQuiz();
 
-		add(takeQuiz());
+		add(takeQuizDisplay);
 	}
 
 	public JPanel createQuiz()
@@ -254,6 +258,7 @@ public class QuizFrame extends JFrame implements ActionListener
 
 	public JPanel takeQuiz()
 	{
+
 		JPanel panel = new JPanel();
 		SpringLayout layout = new SpringLayout();
 		panel.setLayout(layout);
@@ -293,7 +298,8 @@ public class QuizFrame extends JFrame implements ActionListener
 		errorLbl = new JLabel("");
 		panel.add(errorLbl);
 
-		submitBtn = new JButton("Continue Quiz");
+		submitBtn = new JButton("Continue");
+		submitBtn.setActionCommand("qCont");
 		submitBtn.addActionListener(this);
 		panel.add(submitBtn);
 
@@ -307,7 +313,7 @@ public class QuizFrame extends JFrame implements ActionListener
 		panel.add(cancelBtn);
 
 
-
+		System.out.println(i);
 		question();
 
 		layout.putConstraint(SpringLayout.WEST, titleLbl, ((WIDTH/2)-100), SpringLayout.WEST,
@@ -372,6 +378,14 @@ public class QuizFrame extends JFrame implements ActionListener
 
 	public void question()
 	{// DB
+
+		qLbl.setText(quiz.getQuestion(i));
+		radio1.setText(quiz.getAnswer1(i));
+		radio2.setText(quiz.getAnswer2(i));
+		radio3.setText(quiz.getAnswer3(i));
+		radio4.setText(quiz.getAnswer4(i));
+
+	/*
 		System.out.println(utility.getQuestion(i, quiz.getId()));
 		qLbl.setText(utility.getQuestion(i, quiz.getId()));
 
@@ -381,13 +395,14 @@ public class QuizFrame extends JFrame implements ActionListener
 
 		radio3.setText(utility.getAnswer(i, 3, quiz.getId()));
 
-		radio4.setText(utility.getAnswer(i, 4, quiz.getId()));
+		radio4.setText(utility.getAnswer(i, 4, quiz.getId()));*/
 	}
 
 
 public void actionPerformed(ActionEvent event)
 {
-	System.out.println(event.getActionCommand());
+	//System.out.println(event.getActionCommand());
+	//System.out.println(event.getActionCommand().equals("qCont"));
 
 	if(event.getActionCommand().equals("Cancel"))
 	{
@@ -399,13 +414,13 @@ public void actionPerformed(ActionEvent event)
 
 	else if(event.getActionCommand().equals("Continue"))
 	{
-		System.out.println(i + " " + size + " " + currClass.getId());
+		//System.out.println(i + " " + size + " " + currClass.getId());
 
 		if (i < size)
 		{
 		if(i == 0)
 		{
-		System.out.println("INSTANCIATED STUFF");
+		//System.out.println("INSTANCIATED STUFF");
 		source = event.getSource();
 		questions = new String[size];
 		ans1 = new String[size];
@@ -415,7 +430,7 @@ public void actionPerformed(ActionEvent event)
 		correctAnswers = new int[size];
 		}
 
-		System.out.println("GOT TO PULLING DATA");
+		//System.out.println("GOT TO PULLING DATA");
 
 			questions[i] = questionTxt.getText();
 			ans1[i] = answer1.getText();
@@ -456,12 +471,17 @@ public void actionPerformed(ActionEvent event)
 			this.dispose();
 			}
 		}
+	}
 
-	if(event.getActionCommand().equals("Continue Quiz"))
+	else if(event.getActionCommand().equals("qCont"))
 	{
-		if(i == 0)
-			usersAnswers = new int[quiz.numQuestions()];
+		//System.out.println(i + " " + size);
 
+		if(i == 0)
+		{
+			usersAnswers = new int[quiz.numQuestions()];
+			//System.out.println("INSTANCIATED");
+		}
 
 		boolean answer1 = radio1.isSelected();
 		boolean answer2 = radio2.isSelected();
@@ -491,26 +511,51 @@ public void actionPerformed(ActionEvent event)
 		{
 
 			//THIS IS WEHERE WE WILL GRADE
-
+			System.out.println("Right before writeGrade call");
+			utility.writeGrade(quiz.getId(), grade(), curr.getId(), currClass.getId());
+			System.out.println("Right after writeGrade call");
 			Menu gui = new Menu(currClass, curr);
 			gui.setVisible(true);
 			this.dispose();
 		}
-
-
-	}
-
-
-	}
-
-		/*else if (event.getActionCommand().equals("Submit"))
+		else
 		{
-			utility.writeQuiz(title, questions, ans1, ans2, ans3, ans4, correctAnswers, currClass.getId());
+			this.remove(takeQuizDisplay);
+			takeQuizDisplay = takeQuiz();
+			this.add(takeQuizDisplay);
+			this.validate();
+			this.repaint();
 		}
-		if(event.getActionCommand().equals("Radio1"))
+
+	}
+
+}
+
+public int grade()
+{
+	int j = 0;
+	int tempGrade = 0;
+	System.out.println(size);
+	while(j < size)
+	{
+		//System.out.println("inside the grad() while loop");
+		System.out.println(usersAnswers[j] + " : " + correctAnswers[j]);
+		if(usersAnswers[j] == correctAnswers[j])
 		{
-			System.out.println("Radios Suck");
-		}*/
+			tempGrade++;
+
+		}
+
+		j++;
+
+	}
+
+	System.out.println(tempGrade);
+	double tempFinalGrade = ((tempGrade*100)/size);
+	System.out.println(tempFinalGrade);
+	return (int)tempFinalGrade;
+	}
+
 
 }
 
@@ -609,4 +654,3 @@ public void actionPerformed(ActionEvent event)
 		else
 			System.out.println("Something Unexpected happened");
 	}*/
-}

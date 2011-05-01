@@ -37,11 +37,29 @@ public class Admin extends User
 		return;
 	}
 
+	public int getNumClasses()
+	{
+		return classList.size();
+	}
+
 	public Admin createAdmin(int id, String name, String pass)
 	{
 		Admin admin = new Admin(id, name, pass);
 		return admin;
 	}
+
+	public int[] getClassList()
+	{
+		int[] tempArray = new int[classList.size()];
+
+		for(int i = 0; i < classList.size(); i++)
+		{
+			tempArray[i] = classList.get(i);
+		}
+
+		return tempArray;
+	}
+
 
 	public Teacher createTeacher(int id, String name, String pass)
 	{

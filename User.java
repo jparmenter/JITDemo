@@ -45,6 +45,9 @@ abstract public class User
 
 	}
 
+	abstract int[] getClassList();
+	abstract int getNumClasses();
+
 
 	/*public void addClass(Class _c)
 	{

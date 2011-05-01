@@ -399,7 +399,7 @@ public Quiz openQuiz(int quizId)
 			String[] tempAnswer2 = null;
 			String[] tempAnswer3 = null;
 			String[] tempAnswer4 = null;
-			String[] tempCorrectAnswer = null;
+			int[] tempCorrectAnswer = null;
 
 			try
 			{
@@ -452,7 +452,7 @@ public Quiz openQuiz(int quizId)
 			   ResultSet corr = stmt.executeQuery("SELECT array_to_string(ARRAY[correctanswer], ',') from \"quiz\" WHERE id=" + quizId);
 			   while (corr.next())
 			   {
-				   tempCorrectAnswer = getQuizArray(corr.getString(1));
+				   tempCorrectAnswer = getClassArray(corr.getString(1));
 			   }
 			   corr.close();
 			   conn.close();
@@ -471,13 +471,15 @@ public Quiz openQuiz(int quizId)
 
 		public void writeQuiz(int quizId, String[] questions, String[] answers1, String[] answers2, String[] answers3, String[] answers4, int[] correctAnswers, int classId)
 		{
+			String class_quiz_id = Integer.toString(classId) + Integer.toString(quizId);
+			int final_class_quiz_id = Integer.parseInt(class_quiz_id);
 				try
 				{
 					Connection conn = DriverManager.getConnection(url,"postgres","jakl");
 					Statement st = conn.createStatement();
-					st.executeUpdate("INSERT INTO \"quiz\"\nVALUES\n(" + quizId + ", '{" + sArrayToString(questions) + "}', '{" + sArrayToString(answers1)+ "}', '{" + sArrayToString(answers2) + "}', '{" + sArrayToString(answers3) + "}', '{" + sArrayToString(answers4) + "}', '{" + intArrayToString(correctAnswers) + "}')");
+					st.executeUpdate("INSERT INTO \"quiz\"\nVALUES\n(" + final_class_quiz_id + ", '{" + sArrayToString(questions) + "}', '{" + sArrayToString(answers1)+ "}', '{" + sArrayToString(answers2) + "}', '{" + sArrayToString(answers3) + "}', '{" + sArrayToString(answers4) + "}', '{" + intArrayToString(correctAnswers) + "}')");
 					Statement st1 = conn.createStatement();
-					st1.executeUpdate("UPDATE \"class\" SET quizids = quizids || ARRAY["+ quizId + "] WHERE id=" + classId);
+					st1.executeUpdate("UPDATE \"class\" SET quizids = quizids || ARRAY["+ final_class_quiz_id + "] WHERE id=" + classId);
 
 					System.out.println("success!");
 					conn.close();
@@ -580,6 +582,49 @@ public Quiz openQuiz(int quizId)
 
 		return temp;
 	}
+
+	public void writeGrade(int quizId, int grade, int id, int classId)
+	{
+		String student_class_quiz_id =  Integer.toString(id) + Integer.toString(classId) + Integer.toString(quizId);
+			try
+			{
+				Connection conn = DriverManager.getConnection(url,"postgres","jakl");
+				Statement st = conn.createStatement();
+				st.execute("INSERT INTO \"grades\"\nVALUES\n(" + student_class_quiz_id + ", " + id + ", " + classId + ", " + quizId + ", " + grade + ");");
+				st.close();
+				conn.close();
+			}
+			catch (Exception e)
+			{
+				System.out.println(e.getMessage());
+			}
+	}
+
+
+
+
+
+	public void getGrade(int id, int currClass)
+		{
+			try
+			{
+				Connection conn = DriverManager.getConnection(url,"postgres","jakl");
+				Statement st = conn.createStatement();
+				st.executeUpdate("SELECT grade FROM \"grades\" WHERE studentid =" + id + "AND classid=" + currClass);
+				st.close();
+				conn.close();
+			}
+			catch (Exception e)
+			{
+				System.out.println(e.getMessage());
+			}
+	}
+
+
+
+
+
+
 
 	public String[] getQuizArray(String str)
 	{

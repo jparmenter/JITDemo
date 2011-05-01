@@ -849,83 +849,61 @@ public class Menu extends JFrame
 
 public JPanel grades(JPanel panel, SpringLayout layout, User student, int x, int y)
 	{
+				// Title = Quiz Title: "Quiz 1"
+					// Grade =
 
-		// Title = Quiz Title: "Quiz 1"
-		// Grade =
+					JPanel tempPanel = new JPanel();
+					int[] tempArray = curr.getClassList();
 
-		//with DB
-		int i = 0;
-		int size = currClass.getNumQuizes();
-		JLabel[] qTitleLbl = new JLabel[size];
-		JLabel [] qGradeLbl = new JLabel[size];
+					//with DB
+					int i = 0;
+					//int size = currClass.getNumQuizes();
 
-		/*Layout for Admins and Teachers:
+					/*
+					Plan: get a list of classes, for each query grades table for mathcing
+					student id and class id, print those grades along with quiz id.
 
-		Jeremy:
-			100%
-			67%
-		Kevin
-			543%
-			0%
-		Alex
-			-23%
-			2%
-		*/
+					then move on to the next
+					*/
+					while(i < curr.getNumClasses())
+					{
+					JLabel[] qTitleLbl = new JLabel[currClass.getNumQuizzes()];
+					JLabel [] qGradeLbl = new JLabel[currClass.getNumQuizzes()];
 
-		if(curr.getStatus() == 't');
-		{
 
-		i = 0;
+						i++;
 
-		while (i < size)
-		{
-			qTitleLbl[i] = new JLabel("Quiz");
-			panel.add(qTitleLbl[i]);
+					}
 
-			qGradeLbl[i] = new JLabel("100%");
-			panel.add(qGradeLbl[i]);
+					i = 0;
 
-			layout.putConstraint(SpringLayout.WEST, qTitleLbl[i], x , SpringLayout.WEST,
-				panel);
-			layout.putConstraint(SpringLayout.NORTH, qTitleLbl[i], y, SpringLayout.NORTH,
-				panel);
-			layout.putConstraint(SpringLayout.NORTH, qGradeLbl[i], y, SpringLayout.NORTH,
-				panel);
-			layout.putConstraint(SpringLayout.WEST, qGradeLbl[i], 100, SpringLayout.EAST,
-				qTitleLbl[i]);
-			y += 45;   //CHANGE
-			i++;
-		}
+					/*while (i < size)
+					{
+						qTitleLbl[i] = new JLabel("Quiz");
+						panel.add(qTitleLbl[i]);
 
-		}
+						qGradeLbl[i] = new JLabel("100%");
+						panel.add(qGradeLbl[i]);
 
-		/*int i = 0;
-		int size = 4;
-		JLabel [] qTitleLbl = new JLabel[size];
-		JLabel [] qGradeLbl = new JLabel[size];
+						layout.putConstraint(SpringLayout.WEST, qTitleLbl[i], x , SpringLayout.WEST, panel);
+						layout.putConstraint(SpringLayout.NORTH, qTitleLbl[i], y, SpringLayout.NORTH, panel);
+						layout.putConstraint(SpringLayout.NORTH, qGradeLbl[i], y, SpringLayout.NORTH, panel);
+						layout.putConstraint(SpringLayout.WEST, qGradeLbl[i], 100, SpringLayout.EAST, qTitleLbl[i]);
+						y += 45;   //CHANGE
 
-		while (i < size)
-		{
-			qTitleLbl[i] = new JLabel("Quiz");
-			panel.add(qTitleLbl[i]);
+						i++;
+					}*/
 
-			qGradeLbl[i] = new JLabel("100%");
-			panel.add(qGradeLbl[i]);
-
-			layout.putConstraint(SpringLayout.WEST, qTitleLbl[i], x , SpringLayout.WEST,
-				panel);
-			layout.putConstraint(SpringLayout.NORTH, qTitleLbl[i], y, SpringLayout.NORTH,
-				panel);
-			layout.putConstraint(SpringLayout.NORTH, qGradeLbl[i], y, SpringLayout.NORTH,
-				panel);
-			layout.putConstraint(SpringLayout.WEST, qGradeLbl[i], x, SpringLayout.EAST,
-				qTitleLbl[i]);
-			y += 45;   //CHANGE
-			i++;
-		}*/
-
-		return panel;
+	return tempPanel;
 	}
+
+
+
+
+public JPanel grades(Quiz gradeQuiz)
+{
+	return null;
+}
 
 
 
