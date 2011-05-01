@@ -438,24 +438,24 @@ public void actionPerformed(ActionEvent event)
 			ans3[i] = answer3.getText();
 			ans4[i] = answer4.getText();
 
-			boolean answer1 = radio1.isSelected();
-			boolean answer2 = radio2.isSelected();
-			boolean answer3 = radio3.isSelected();
-			boolean answer4 = radio4.isSelected();
+			boolean answer1Flag = radio1.isSelected();
+			boolean answer2Flag = radio2.isSelected();
+			boolean answer3Flag = radio3.isSelected();
+			boolean answer4Flag = radio4.isSelected();
 
-			if(answer1)
+			if(answer1Flag)
 			{
 				correctAnswers[i] = 1;
 			}
-			else if(answer2)
+			else if(answer2Flag)
 			{
 				correctAnswers[i] = 2;
 			}
-			else if(answer3)
+			else if(answer3Flag)
 			{
 				correctAnswers[i] = 3;
 			}
-			else if(answer4)
+			else if(answer4Flag)
 			{
 				correctAnswers[i] = 4;
 			}
@@ -470,6 +470,12 @@ public void actionPerformed(ActionEvent event)
 			gui.setVisible(true);
 			this.dispose();
 			}
+
+			questionTxt.setText("");
+			answer1.setText("");
+			answer2.setText("");
+			answer3.setText("");
+			answer4.setText("");
 		}
 	}
 

@@ -800,11 +800,25 @@ public class Menu extends JFrame
 		int y = 25;
 		int inc = 45;
 
-		JLabel titleLbl = new JLabel("Grades");
+		JLabel titleLbl;
+		JLabel qLbl;
+
+		if(curr.getStatus() == 's')
+		{
+		titleLbl = new JLabel("Grades");
 		gradesPanel.add(titleLbl);
 
-		JLabel qLbl = new JLabel("Quiz");
+		qLbl = new JLabel("QuizID");
 		gradesPanel.add(qLbl);
+		}
+		else
+		{
+		titleLbl = new JLabel("Grades");
+		gradesPanel.add(titleLbl);
+
+		qLbl = new JLabel("QuizID-StudentID");
+		gradesPanel.add(qLbl);
+		}
 
 		JLabel gLbl = new JLabel("Grades");
 		gradesPanel.add(gLbl);
@@ -850,46 +864,62 @@ public class Menu extends JFrame
 public JPanel grades(JPanel panel, SpringLayout layout, User student, int x, int y)
 	{
 
-					//System.out.println(currClass.showQuizId(1));
-				// Title = Quiz Title: "Quiz 1"
-					// Grade =
-
 					JPanel tempPanel = new JPanel();
 					int[] tempArray = curr.getClassList();
 
-					//with DB
 					int i = 0;
-					//int size = currClass.getNumQuizes();
-
-					/*
-					Plan: get a list of classes, for each query grades table for mathcing
-					student id and class id, print those grades along with quiz id.
-
-					then move on to the next
-					*/
 
 					if(currClass.getNumQuizzes() > 0)
 					{
-					JLabel[] qTitleLbl = new JLabel[currClass.getNumQuizzes()];
-					JLabel [] qGradeLbl = new JLabel[currClass.getNumQuizzes()];
+						if(curr.getStatus() != 's')
+						{
+							JLabel[] qTitleLbl = new JLabel[10]; //num quizzes times students
+							JLabel [] qGradeLbl = new JLabel[10];
 
-					while(i < currClass.getNumQuizzes())
-					{
-						System.out.println(qTitleLbl.length);
+							while(i < 10)
+								{
+									//System.out.println(qTitleLbl.length);
 
-						qTitleLbl[i] = new JLabel(Integer.toString(currClass.showQuizId(i)));
-						panel.add(qTitleLbl[i]);
-						qGradeLbl[i] = new JLabel(utility.getGrade(curr.getId(), currClass.getId(), i+1));
-						panel.add(qGradeLbl[i]);
-						layout.putConstraint(SpringLayout.WEST, qTitleLbl[i], x , SpringLayout.WEST, panel);
-						layout.putConstraint(SpringLayout.NORTH, qTitleLbl[i], y, SpringLayout.NORTH, panel);
-						layout.putConstraint(SpringLayout.NORTH, qGradeLbl[i], y, SpringLayout.NORTH, panel);
-						layout.putConstraint(SpringLayout.WEST, qGradeLbl[i], 100, SpringLayout.EAST, qTitleLbl[i]);
-						y += 45;   //CHANGE
+									qTitleLbl[i] = new JLabel(utility.getTeacherNameInfo(currClass.getId(), i+1));
+									panel.add(qTitleLbl[i]);
+									qGradeLbl[i] = new JLabel(utility.getTeacherGrade(currClass.getId(), i+1));
+									panel.add(qGradeLbl[i]);
+									layout.putConstraint(SpringLayout.WEST, qTitleLbl[i], x-15 , SpringLayout.WEST, panel);
+									layout.putConstraint(SpringLayout.NORTH, qTitleLbl[i], y, SpringLayout.NORTH, panel);
+									layout.putConstraint(SpringLayout.NORTH, qGradeLbl[i], y, SpringLayout.NORTH, panel);
+									layout.putConstraint(SpringLayout.WEST, qGradeLbl[i], 100, SpringLayout.EAST, qTitleLbl[i]);
+									y += 15;   //CHANGE
 
-						i++;
+									i++;
 
-					}
+								}
+
+
+						}
+						else
+						{
+							JLabel[] qTitleLbl = new JLabel[currClass.getNumQuizzes()];
+							JLabel [] qGradeLbl = new JLabel[currClass.getNumQuizzes()];
+
+							while(i < currClass.getNumQuizzes())
+								{
+									//System.out.println(qTitleLbl.length);
+
+									qTitleLbl[i] = new JLabel(Integer.toString(currClass.showQuizId(i)));
+									panel.add(qTitleLbl[i]);
+									qGradeLbl[i] = new JLabel(utility.getGrade(curr.getId(), currClass.getId(), i+1));
+									panel.add(qGradeLbl[i]);
+									layout.putConstraint(SpringLayout.WEST, qTitleLbl[i], x , SpringLayout.WEST, panel);
+									layout.putConstraint(SpringLayout.NORTH, qTitleLbl[i], y, SpringLayout.NORTH, panel);
+									layout.putConstraint(SpringLayout.NORTH, qGradeLbl[i], y, SpringLayout.NORTH, panel);
+									layout.putConstraint(SpringLayout.WEST, qGradeLbl[i], 100, SpringLayout.EAST, qTitleLbl[i]);
+									y += 15;   //CHANGE
+
+									i++;
+
+								}
+
+						}
 
 					}
 

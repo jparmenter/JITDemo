@@ -634,6 +634,68 @@ public Quiz openQuiz(int quizId)
 		}
 
 
+public String getTeacherGrade(int currClassId, int index)
+{
+			try
+			{
+				String tempGrade = "";
+				Connection conn = DriverManager.getConnection(url,"postgres","jakl");
+				Statement st = conn.createStatement();
+				ResultSet rs = st.executeQuery("SELECT grade FROM \"grades\" WHERE classid=" + currClass);
+
+				while(index > 0)
+				{
+				rs.next();
+				index--;
+				}
+				tempGrade = rs.getString(1);
+
+				rs.close();
+				st.close();
+				conn.close();
+
+				return tempGrade;
+			}
+			catch (Exception e)
+			{
+				System.out.println(e.getMessage());
+				return null;
+			}
+
+}
+
+public String getTeacherNameInfo(int currClassId, int index)
+{
+			try
+			{
+				String tempGrade = "";
+				Connection conn = DriverManager.getConnection(url,"postgres","jakl");
+				Statement st = conn.createStatement();
+				ResultSet rs = st.executeQuery("SELECT quizid, studentid FROM \"grades\" WHERE classid=" + currClass);
+
+				while(index > 0)
+				{
+				rs.next();
+				index--;
+				}
+				tempGrade = rs.getString(1);
+				tempGrade = tempGrade.concat("-" + rs.getString(2));
+
+				rs.close();
+				st.close();
+				conn.close();
+
+				return tempGrade;
+			}
+			catch (Exception e)
+			{
+				System.out.println(e.getMessage());
+				return null;
+			}
+
+}
+
+
 
 
 
