@@ -604,22 +604,34 @@ public Quiz openQuiz(int quizId)
 
 
 
-	public void getGrade(int id, int currClass)
+	public String getGrade(int id, int currClass, int index)
 		{
 			try
 			{
+				String tempGrade = "";
 				Connection conn = DriverManager.getConnection(url,"postgres","jakl");
 				Statement st = conn.createStatement();
-				st.executeUpdate("SELECT grade FROM \"grades\" WHERE studentid =" + id + "AND classid=" + currClass);
+				ResultSet rs = st.executeQuery("SELECT grade FROM \"grades\" WHERE studentid =" + id + "AND classid=" + currClass);
+
+				while(index > 0)
+				{
+				rs.next();
+				index--;
+				}
+				tempGrade = rs.getString(1);
+
+				rs.close();
 				st.close();
 				conn.close();
+
+				return tempGrade;
 			}
 			catch (Exception e)
 			{
 				System.out.println(e.getMessage());
+				return null;
 			}
-	}
-
+		}
 
 
 

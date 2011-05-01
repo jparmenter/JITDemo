@@ -849,6 +849,8 @@ public class Menu extends JFrame
 
 public JPanel grades(JPanel panel, SpringLayout layout, User student, int x, int y)
 	{
+
+					//System.out.println(currClass.showQuizId(1));
 				// Title = Quiz Title: "Quiz 1"
 					// Grade =
 
@@ -865,17 +867,33 @@ public JPanel grades(JPanel panel, SpringLayout layout, User student, int x, int
 
 					then move on to the next
 					*/
-					while(i < curr.getNumClasses())
+
+					if(currClass.getNumQuizzes() > 0)
 					{
 					JLabel[] qTitleLbl = new JLabel[currClass.getNumQuizzes()];
 					JLabel [] qGradeLbl = new JLabel[currClass.getNumQuizzes()];
 
+					while(i < currClass.getNumQuizzes())
+					{
+						System.out.println(qTitleLbl.length);
+
+						qTitleLbl[i] = new JLabel(Integer.toString(currClass.showQuizId(i)));
+						panel.add(qTitleLbl[i]);
+						qGradeLbl[i] = new JLabel(utility.getGrade(curr.getId(), currClass.getId(), i+1));
+						panel.add(qGradeLbl[i]);
+						layout.putConstraint(SpringLayout.WEST, qTitleLbl[i], x , SpringLayout.WEST, panel);
+						layout.putConstraint(SpringLayout.NORTH, qTitleLbl[i], y, SpringLayout.NORTH, panel);
+						layout.putConstraint(SpringLayout.NORTH, qGradeLbl[i], y, SpringLayout.NORTH, panel);
+						layout.putConstraint(SpringLayout.WEST, qGradeLbl[i], 100, SpringLayout.EAST, qTitleLbl[i]);
+						y += 45;   //CHANGE
 
 						i++;
 
 					}
 
-					i = 0;
+					}
+
+					//i = 0;
 
 					/*while (i < size)
 					{
