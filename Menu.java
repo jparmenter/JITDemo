@@ -90,6 +90,12 @@ public class Menu extends JFrame
 			jTab.add("Create Account", cAccountPanel);
 			jTab.add("Create Class", cClassPanel);
 		}
+
+		jTab.addChangeListener(new ChangeListener() {
+		public void stateChanged(ChangeEvent e) {
+			tabChanged();
+		}});
+
 	}
 
 	public Menu(Class _currClass, User _curr)
@@ -133,6 +139,10 @@ public class Menu extends JFrame
 
 		jTab.add("Grade View", gPanel);
 
+		jTab.addChangeListener(new ChangeListener() {
+		public void stateChanged(ChangeEvent e) {
+			tabChanged();
+		}});
 	}
 
 	public JPanel create(String title)
@@ -374,9 +384,9 @@ public class Menu extends JFrame
 			addBtn.addActionListener(this);
 			createPanel.add(addBtn);
 
-			JButton logoutBtn = new JButton("Logout");
-			logoutBtn.addActionListener(this);
-			createPanel.add(logoutBtn);
+			JButton backBtn = new JButton("Main Menu");
+			backBtn.addActionListener(this);
+			createPanel.add(backBtn);
 
 			layout.putConstraint(SpringLayout.WEST, id, (((WIDTH/2)/2)-50), SpringLayout.WEST,
 				createPanel);
@@ -390,14 +400,14 @@ public class Menu extends JFrame
 			layout.putConstraint(SpringLayout.NORTH ,addBtn, (HEIGHT-110), SpringLayout.NORTH,
 				createPanel);
 			layout.putConstraint(SpringLayout.EAST, addBtn, -5, SpringLayout.WEST,
-				logoutBtn);
+				backBtn);
 
 			y += inc;
 
-			layout.putConstraint(SpringLayout.WEST, logoutBtn, (WIDTH-90), SpringLayout.WEST,
+			layout.putConstraint(SpringLayout.WEST, backBtn, (WIDTH-115), SpringLayout.WEST,
 				createPanel);
-			layout.putConstraint(SpringLayout.NORTH, logoutBtn, (HEIGHT-110), SpringLayout.NORTH,
-			createPanel);
+			layout.putConstraint(SpringLayout.NORTH, backBtn, (HEIGHT-110), SpringLayout.NORTH,
+				createPanel);
 
 			layout.putConstraint(SpringLayout.WEST, createSErrorLbl, ((WIDTH/2)-50), SpringLayout.WEST,
 				createPanel);
@@ -657,6 +667,15 @@ public class Menu extends JFrame
 				}
 			      }
 			});
+
+			JButton logoutBtn = new JButton("Logout");
+			logoutBtn.addActionListener(this);
+			cPanel.add(logoutBtn);
+
+			layout.putConstraint(SpringLayout.WEST, logoutBtn, (WIDTH-90), SpringLayout.WEST,
+				cPanel);
+			layout.putConstraint(SpringLayout.NORTH, logoutBtn, (HEIGHT-110), SpringLayout.NORTH,
+				cPanel);
 		}
 		else
 		{
@@ -685,16 +704,24 @@ public class Menu extends JFrame
 				    QuizFrame gui = new QuizFrame(quiz, currClass, curr);
 				    gui.setVisible(true);
 
-				  }
-				}
+				  }}
 			      }
 			});
 
+
+			JButton backBtn = new JButton("Main Menu");
+			backBtn.addActionListener(this);
+			cPanel.add(backBtn);
+
+			layout.putConstraint(SpringLayout.WEST, backBtn, (WIDTH-115), SpringLayout.WEST,
+				cPanel);
+			layout.putConstraint(SpringLayout.NORTH, backBtn, (HEIGHT-110), SpringLayout.NORTH,
+				cPanel);
+
+
 		}
 
-		JButton logoutBtn = new JButton("Logout");
-		logoutBtn.addActionListener(this);
-		cPanel.add(logoutBtn);
+
 
 		layout.putConstraint(SpringLayout.WEST, titleLbl, x, SpringLayout.WEST,
 			cPanel);
@@ -715,10 +742,6 @@ public class Menu extends JFrame
 		layout.putConstraint(SpringLayout.NORTH, pane, y, SpringLayout.NORTH,
 			cPanel);
 
-		layout.putConstraint(SpringLayout.WEST, logoutBtn, (WIDTH-90), SpringLayout.WEST,
-			cPanel);
-		layout.putConstraint(SpringLayout.NORTH, logoutBtn, (HEIGHT-110), SpringLayout.NORTH,
-			cPanel);
 
 		return cPanel;
 	}
@@ -1111,20 +1134,35 @@ public JPanel grades(Quiz gradeQuiz)
 
 	private void tabChanged()
 	{
-		aErrorLbl.setText("");
-		cPassTxt.setText("");
-		nPassTxt.setText("");
-
-		if (curr.getStatus() == 'a')
+		if (currClass == null)
 		{
-			nameTxt.setText("");
-			userList.setSelectedIndex(0);
-			passTxt.setText("");
-			createAErrorLbl.setText("");
-			courseTxt.setText("");
-			titleTxt.setText("");
-			descTxt.setText("");
-			createCErrorLbl.setText("");
+			aErrorLbl.setText("");
+			cPassTxt.setText("");
+			nPassTxt.setText("");
+
+			if (curr.getStatus() == 'a')
+			{
+				idTxt.setText("");
+				nameTxt.setText("");
+				userList.setSelectedIndex(0);
+				passTxt.setText("");
+				createAErrorLbl.setText("");
+				courseTxt.setText("");
+				titleTxt.setText("");
+				descTxt.setText("");
+				teacherTxt.setText("");
+				createCErrorLbl.setText("");
+			}
+		}
+		else
+		{
+			if (curr.getStatus() == 'a')
+			{
+				qTitleTxt.setText("");
+				numList.setSelectedIndex(-1);
+				studentTxt.setText("");
+				createSErrorLbl.setText("");
+			}
 		}
 	}
 }

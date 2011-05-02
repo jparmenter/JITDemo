@@ -414,68 +414,78 @@ public void actionPerformed(ActionEvent event)
 
 	else if(event.getActionCommand().equals("Continue"))
 	{
-		//System.out.println(i + " " + size + " " + currClass.getId());
 
-		if (i < size)
+		if((answer1.getText().length() > 0) && (answer2.getText().length() > 0) && (answer3.getText().length() > 0) &&
+			(answer4.getText().length() > 0) && (questionTxt.getText().length() > 0))
 		{
-		if(i == 0)
-		{
-		//System.out.println("INSTANCIATED STUFF");
-		source = event.getSource();
-		questions = new String[size];
-		ans1 = new String[size];
-		ans2 = new String[size];
-		ans3 = new String[size];
-		ans4 = new String[size];
-		correctAnswers = new int[size];
+
+			if (i < size)
+			{
+				if(i == 0)
+				{
+				//System.out.println("INSTANCIATED STUFF");
+				source = event.getSource();
+				questions = new String[size];
+				ans1 = new String[size];
+				ans2 = new String[size];
+				ans3 = new String[size];
+				ans4 = new String[size];
+				correctAnswers = new int[size];
+				}
+
+			//System.out.println("GOT TO PULLING DATA");
+
+
+				questions[i] = questionTxt.getText();
+				ans1[i] = answer1.getText();
+				ans2[i] = answer2.getText();
+				ans3[i] = answer3.getText();
+				ans4[i] = answer4.getText();
+
+				boolean answer1Flag = radio1.isSelected();
+				boolean answer2Flag = radio2.isSelected();
+				boolean answer3Flag = radio3.isSelected();
+				boolean answer4Flag = radio4.isSelected();
+
+				if(answer1Flag)
+				{
+					correctAnswers[i] = 1;
+				}
+				else if(answer2Flag)
+				{
+					correctAnswers[i] = 2;
+				}
+				else if(answer3Flag)
+				{
+					correctAnswers[i] = 3;
+				}
+				else if(answer4Flag)
+				{
+					correctAnswers[i] = 4;
+				}
+
+				i++;
+
+				if(i == size)
+				{
+					int tempClassId = currClass.getId();
+					utility.writeQuiz(title, questions, ans1, ans2, ans3, ans4, correctAnswers, tempClassId);
+					Menu gui = new Menu(currClass, curr);
+					gui.setVisible(true);
+					this.dispose();
+				}
+
+					questionTxt.setText("");
+					answer1.setText("");
+					answer2.setText("");
+					answer3.setText("");
+					answer4.setText("");
+					errorLbl.setText("Question Added");
+				}
 		}
-
-		//System.out.println("GOT TO PULLING DATA");
-
-			questions[i] = questionTxt.getText();
-			ans1[i] = answer1.getText();
-			ans2[i] = answer2.getText();
-			ans3[i] = answer3.getText();
-			ans4[i] = answer4.getText();
-
-			boolean answer1Flag = radio1.isSelected();
-			boolean answer2Flag = radio2.isSelected();
-			boolean answer3Flag = radio3.isSelected();
-			boolean answer4Flag = radio4.isSelected();
-
-			if(answer1Flag)
-			{
-				correctAnswers[i] = 1;
-			}
-			else if(answer2Flag)
-			{
-				correctAnswers[i] = 2;
-			}
-			else if(answer3Flag)
-			{
-				correctAnswers[i] = 3;
-			}
-			else if(answer4Flag)
-			{
-				correctAnswers[i] = 4;
-			}
-
-			i++;
-
-			if(i == size)
-			{
-			int tempClassId = currClass.getId();
-			utility.writeQuiz(title, questions, ans1, ans2, ans3, ans4, correctAnswers, tempClassId);
-			Menu gui = new Menu(currClass, curr);
-			gui.setVisible(true);
-			this.dispose();
-			}
-
-			questionTxt.setText("");
-			answer1.setText("");
-			answer2.setText("");
-			answer3.setText("");
-			answer4.setText("");
+		else
+		{
+			errorLbl.setText("Please Fill in ALL answers");
 		}
 	}
 
