@@ -1,3 +1,14 @@
+/*
+*
+*	Class class is where the class data is stored / used
+*
+*
+* Authors:
+* Jeremy Parmenter
+* Alex Holguin
+* John Kevin Canez
+*/
+
 import java.util.*;
 
 public class Class {
@@ -6,8 +17,8 @@ public class Class {
 	private String desc;
 	private int teacherId;
 	private Vector<Integer> quizIds;
-	//private Vector<User> roster;
 
+	//constructor for a class with no quizzes
 	public Class(int _id, String _title, String _desc, int _teacherId)
 	{
 		id = _id;
@@ -15,9 +26,9 @@ public class Class {
 		desc = _desc;
 		teacherId = _teacherId;
 		quizIds = new Vector<Integer>();
-		//roster = null;
 	}
 
+	//Constructor for a class with quizzes
 	public Class(int _id, String _title, String _desc, int[] tempQuizIds, int _teacherId)
 	{
 		id = _id;
@@ -46,18 +57,10 @@ public class Class {
 		desc = nDesc;
 	}
 
-	public void addQuiz(int tempId)			// be sure to write to db
+	public void addQuiz(int tempId)
 	{
 			quizIds.add(tempId);
 	}
-
-	/*public void addStudent(User student)
-	{
-		if (roster == null)
-			roster = new Vector<User>();
-
-		roster.add(student);
-	}*/
 
 	public int getTeacher()
 	{

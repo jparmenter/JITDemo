@@ -1,3 +1,14 @@
+/*
+*
+*
+*
+*
+* Authors:
+* Jeremy Parmenter
+* Alex Holguin
+* John Kevin Canez
+*/
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -267,7 +278,7 @@ public class QuizFrame extends JFrame implements ActionListener
 		int y = 25;
 		int inc = 45;
 
-		JLabel titleLbl = new JLabel("Quiz Title");//quiz.getTitle()
+		JLabel titleLbl = new JLabel("Quiz Title");
 		panel.add(titleLbl);
 
 		qLbl = new JLabel("Quesion");
@@ -574,99 +585,3 @@ public int grade()
 
 
 }
-
-
-
-
-
-
-
-
-
-
-
-	/*public void actionPerformed(ActionEvent event)
-	{
-
-		Object source = event.getSource();
-		String[] questions = new String[size];
-		String[] ans1 = new String[size];
-		String[] ans2 = new String[size];
-		String[] ans3 = new String[size];
-		String[] ans4 = new String[size];
-		int[] correctAnswers = new int[size];
-
-		if (source == radio1)
-			System.out.println("Radio1");
-		else if (source == radio2)
-			System.out.println("Radio2");
-		else if (source == radio3)
-			System.out.println("Radio3");
-		else if (source == radio4)
-			System.out.println("Radio4");
-		else if (source == cancelBtn)
-		{
-			dispose();
-			Menu gui = new Menu(currClass, curr);
-			gui.setVisible(true);
-		}
-		else if (source == submitBtn)
-		{
-			if (quiz != null)
-			{
-				/*questions[i] = questionTxt.getText();
-				ans1[i] = answer1.getText();
-				ans2[i] = answer2.getText();
-				ans3[i] = answer3.getText();
-				ans4[i] = answer4.getText();
-
-				//utility.writeQuiz(quiz.getId()
-
-				System.out.println("shit");
-			}
-			else
-			{
-				// DB
-				boolean answer1 = radio1.isSelected();
-				boolean answer2 = radio2.isSelected();
-				boolean answer3 = radio3.isSelected();
-				boolean answer4 = radio4.isSelected();
-
-				if(answer1)
-				{
-					correctAnswers[i] = 1;
-				}
-				else if(answer2)
-				{
-					correctAnswers[i] = 2;
-				}
-				else if(answer3)
-				{
-					correctAnswers[i] = 3;
-				}
-				else if(answer4)
-				{
-					correctAnswers[i] = 4;
-				}
-
-			}
-
-
-			if (event.getActionCommand().equals("Submit"))
-			{
-				dispose();
-				Menu gui = new Menu(currClass, curr);
-				gui.setVisible(true);
-			}
-
-			i++;
-
-			if (i == size+1)
-				submitBtn.setText("Submit");
-				utility.writeQuiz(title, questions, ans1, ans2, ans3, ans4, correctAnswers, currClass.getId());
-			if (quiz != null)
-				question();
-		}
-		else
-			System.out.println("Something Unexpected happened");
-	}*/

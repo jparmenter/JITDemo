@@ -1,3 +1,14 @@
+/*
+*
+*
+*
+*
+* Authors:
+* Jeremy Parmenter
+* Alex Holguin
+* John Kevin Canez
+*/
+
 import java.util.*;
 import java.io.*;
 import java.sql.*;
@@ -785,6 +796,30 @@ public String getTeacherNameInfo(int currClassId, int index)
 		return s;
 
 	}
+
+	public int getQuizzesTaken(int classId)
+	{
+		int i = 0;
+		try
+		{
+		   Connection conn = DriverManager.getConnection(url,"postgres","jakl");
+		   Statement stmt = conn.createStatement();
+		   ResultSet count = stmt.executeQuery("SELECT classid FROM \"grades\" WHERE classid=" + classId);
+		   if(!count.isLast())
+		   {
+		   count.next();
+	   	   }
+		   i = count.getRow();
+		   count.close();
+		   conn.close();
+		   return i;
+	   }
+	   catch(Exception e)
+	   {
+		   System.out.println(e.getMessage());
+		   return 0;
+	   }
+   }
 
 
 

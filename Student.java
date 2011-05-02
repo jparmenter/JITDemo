@@ -1,16 +1,27 @@
+/*
+*	Account type for a Student
+*
+*
+*
+* Authors:
+* Jeremy Parmenter
+* Alex Holguin
+* John Kevin Canez
+*/
+
 import java.util.Vector;
 
 public class Student extends User
 {
-
+	//Constructor when there are no classes for the Student
 	public Student(int _id, String _name, String _pass)
 	{
 		super(_id,_name,_pass);
 		status = 's';
 		classList = new Vector<Integer>(); // might as well instanciate it
-		//grades = null;
 	}
 
+	//Constructor when Student does have classes
 	public Student(int _id, String _name, String _pass, int[] tempClassArray)
 	{
 		super(_id, _name, _pass);
@@ -23,14 +34,7 @@ public class Student extends User
 		}
 	}
 
-	//public void modifyGrade(int classNmbr, int grade)
-	///{
-		//int oldGrade = grades.get(--classNmbr);
-		//oldGrade = grade;
-	//}
-
-	// Need to know if the change pass was successful
-
+	// returns an array of the users current classes
 	public int[] getClassList()
 	{
 		int[] tempArray = new int[classList.size()];
@@ -43,12 +47,13 @@ public class Student extends User
 		return tempArray;
 	}
 
+	//returns the number of classes the current user is registered for
 	public int getNumClasses()
 	{
 		return classList.size();
 	}
 
-
+	//used to flag successful password changes
 	public boolean changePass(String oldPass, String newPass)
 	{
 
@@ -60,23 +65,6 @@ public class Student extends User
 		return false;
 	}
 
-	public void addClass(int classId)
-	{
-		if (classList == null)
-		{
-			classList = new Vector<Integer>();
-		}
-
-		classList.add(classId);
-		//if (status == 's')
-		//	grades.add(0);
-	}
-
-	/* getClass is a function in java have to name it something else
-	public Vector<Class> getClasses()
-	{
-		return c;
-	}*/
 
 	public String toString()
 	{

@@ -1,16 +1,28 @@
+/*
+*
+*	Quiz Class, hold arrays of questions and answers
+*
+*
+* Authors:
+* Jeremy Parmenter
+* Alex Holguin
+* John Kevin Canez
+*/
+
 import java.util.*;
 
 public class Quiz
 {
 
-	private int quizId;
-	private static String[] question;
-	private String[] answer1;
+	private int quizId;					//QuizId is the unique number of each quiz (concatinated with class ususally class:9999 quiz:1 = 99991.)
+	private static String[] question;	//String array of questions
+	private String[] answer1;			//String array of answers
 	private String[] answer2;
 	private String[] answer3;
 	private String[] answer4;
-	private int[] correctAnswer;
+	private int[] correctAnswer;		//int array of the right answers, used in grading
 
+	//Constructor that takes in all of the data
 	public Quiz(int temp_quizId, String[] temp_question, String[] temp_ans1, String[] temp_ans2,
 					String[] temp_ans3, String[] temp_ans4, int[] temp_correctAnswer)
 	{
@@ -23,41 +35,24 @@ public class Quiz
 		correctAnswer = temp_correctAnswer;
 	}
 
-	/*public int grade(Vector<String> a)
-	{
-		int sum = 0;
-		Question tempQ;
-		String tempA;
-		for (int i = 0; i < question.size(); i++)
-		{
-			tempQ = question.get(i);
-			tempA = a.get(i);
-			if (tempQ.grade(tempA))
-				sum++;
-		}
-
-		return (sum / question.size());
-	}
-
-	public Vector<Question> getQuestion()
-	{
-		return question;
-	}*/
-
+	//returns the correct answer array
 	public int[] getCorrectAnswers()
 	{
 		return correctAnswer;
 	}
 
+	//returns the number of questions in the quiz
 	public static int numQuestions()
 	{
 		return question.length;
 	}
 
+	//returns question
 	public String getQuestion(int index)
 	{
 		return question[index];
 	}
+
 
 	public String getAnswer1(int questionNum)
 	{
@@ -89,11 +84,4 @@ public class Quiz
 		return index + ":\t" + question[index] + "\n\t" + answer1[index] + "\n\t" + answer2[index] + "\n\t" + answer3[index] + "\n\t" + answer4[index];
 	}
 
-	/*public boolean checkAnswer(String userAnswer, int index)
-	{
-		if(correctAnswer[index].equals(userAnswer))
-			return true;
-		else
-			return false;
-	}*/
 }

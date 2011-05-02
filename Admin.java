@@ -1,18 +1,19 @@
-/* Team Name: Jakl
-*  Admin class
-*  Last Modified By: Jeremy Parmenter
-*  Last Modified On: 4/1/11
-*/
-
 /*
-*	TODO: create class?
+*	Administrator account type
+*
+*
+*
+* Authors:
+* Jeremy Parmenter
+* Alex Holguin
+* John Kevin Canez
 */
 
 import java.util.Vector;
 
 public class Admin extends User
 {
-
+	//Constructor for admin with no classes assigned
 	public Admin(int _id, String _name, String _pass)
 	{
 		super(_id, _name, _pass);
@@ -20,6 +21,7 @@ public class Admin extends User
 		classList = new Vector<Integer>();
 	}
 
+	//Constructor for admin WITH classes
 	public Admin(int _id, String _name, String _pass, int[] tempClassArray)
 	{
 		super(_id, _name, _pass);
@@ -31,23 +33,20 @@ public class Admin extends User
 			classList.add(i, tempClassArray[i]);
 		}
 	}
-
-	public void createClass()
-	{
-		return;
-	}
-
+	//returns the number of classes admin is assigned
 	public int getNumClasses()
 	{
 		return classList.size();
 	}
 
+	//create Admin. Used in testing
 	public Admin createAdmin(int id, String name, String pass)
 	{
 		Admin admin = new Admin(id, name, pass);
 		return admin;
 	}
 
+	//Returns the admins list of classes
 	public int[] getClassList()
 	{
 		int[] tempArray = new int[classList.size()];
@@ -60,7 +59,7 @@ public class Admin extends User
 		return tempArray;
 	}
 
-
+	//create teacher, used in testing
 	public Teacher createTeacher(int id, String name, String pass)
 	{
 		Teacher teacher = new Teacher(id, name, pass);

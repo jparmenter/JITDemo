@@ -1,3 +1,14 @@
+/*
+*	Login Panel, this is the first thing the user sees upon running the program
+*
+*
+*
+* Authors:
+* Jeremy Parmenter
+* Alex Holguin
+* John Kevin Canez
+*/
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -112,27 +123,6 @@ public class LoginFrame extends JFrame implements ActionListener
 	{
 		String buttonString = e.getActionCommand();
 		User curr = null;
-		Vector<User> u = new Vector<User>();
-		User admin = new Admin(1234, "Jeremy", "password");
-		User teacher = new Teacher(1111, "Bob", "software");
-		User student = new Student(2222, "James", "progit");
-		//Class nClass = new Class(272111, "CSE 110 Intro to Java", "This class teaches you java", teacher);
-		u.add(admin);
-		u.add(student);
-		u.add(teacher);
-		//Vector<Answer> answers = new Vector<Answer>();
-		//Answer ans = new Answer("2009", false);
-		//answers.add(ans);
-		//ans = new Answer("2010", false);
-		//answers.add(ans);
-		//ans = new Answer("2011", true);
-		//answers.add(ans);
-		//Vector<Question> question = new Vector<Question>();
-		//Question q = new Question("What year is it?", answers);
-		//question.add(q);
-		//Quiz quiz1 = new Quiz("Quiz 1", question);
-		//nClass.addQuiz(quiz1);
-
 
 		if (buttonString.equals("Login"))
 		{
@@ -152,15 +142,6 @@ public class LoginFrame extends JFrame implements ActionListener
 				else
 					errorLbl.setText("Id or Pass or incorrect");
 
-				/* w/o DB
-				if (u != null)
-					for (int i = 0; i < u.size(); i++)
-					{
-						temp = u.get(i);
-						if ((temp.getId() == id) && (pass.compareTo(temp.getPass()) == 0))
-							curr = temp;
-					}
-			//*/
 				if (curr != null)
 				{
 					dispose();

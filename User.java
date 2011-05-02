@@ -1,3 +1,14 @@
+/*
+* Basic User Class, abstract so we can instanciate subusers as Users (ex: User x = new ____(stuff);
+*
+*
+*
+* Authors:
+* Jeremy Parmenter
+* Alex Holguin
+* John Kevin Canez
+*/
+
 import java.util.Vector;
 
 abstract public class User
@@ -6,9 +17,9 @@ abstract public class User
 	protected String name;
 	protected String pass;
 	protected Vector<Integer> classList;
-	//private Vector<Integer> grades;
 	protected char status;
 
+	//Constructor to assign basic data
 	public User(int tempId, String tempName, String tempPass)
 	{
 		id = tempId;
@@ -16,7 +27,7 @@ abstract public class User
 		pass = tempPass;
 	}
 
-	// Need to know if the change pass was successful
+	//Change password, this method mainly used as a test
 	public boolean changePass(String oldPass, String newPass)
 	{
 
@@ -28,6 +39,7 @@ abstract public class User
 		return false;
 	}
 
+	//Test method to show users classes
 	public void showClassIds()
 	{
 		int index = 0;
@@ -38,33 +50,12 @@ abstract public class User
 		}
 	}
 
+	//returns selected class
 	public int showClassId(int index)
 	{
-
 			return classList.get(index);
-
 	}
 
-	abstract int[] getClassList();
-	abstract int getNumClasses();
-
-
-	/*public void addClass(Class _c)
-	{
-		if (c == null)
-			c = new Vector<Class>();
-
-		c.add(_c);
-		if (status == 's')
-			grades.add(0);
-	}
-
-	// getClass is a function in java have to name it something else
-	public Vector<Class> getClasses()
-	{
-		return c;
-	}
-*/
 	public String getName()
 	{
 		return name;
@@ -80,6 +71,7 @@ abstract public class User
 		return pass;
 	}
 
+	//Status used often, used to check what type of account user has
 	public char getStatus()
 	{
 		return status;
@@ -88,4 +80,9 @@ abstract public class User
 	{
 		return "\n\nID: " + id + "\nName: " + name + "\n";
 	}
+
+	//two methods every subclass must have, classes are assigned in them.
+	abstract int[] getClassList();
+
+	abstract int getNumClasses();
 }

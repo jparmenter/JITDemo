@@ -1,11 +1,21 @@
+/*
+*	Main menu Class. main GUI. This is where the user will spend most of their time while not taking a quiz
+*
+*
+*
+* Authors:
+* Jeremy Parmenter
+* Alex Holguin
+* John Kevin Canez
+*/
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.*;
 import javax.swing.event.*;
 
-public class Menu extends JFrame
-	implements ActionListener
+public class Menu extends JFrame implements ActionListener
 {
 	public static int WIDTH = 600;
 	public static int HEIGHT = 400;
@@ -42,6 +52,7 @@ public class Menu extends JFrame
 	private JTextField studentTxt;
 	private JLabel createSErrorLbl;
 
+	//Menu, given the current user logged in and is not viewing a specific class
 	public Menu(User _curr)
 	{
 		super("Just In Time Teaching");
@@ -51,13 +62,14 @@ public class Menu extends JFrame
 
 		try
 		{
-			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName()); //makes the GUI look natural on the os
 		}
 		catch(Exception e)
 		{
 			e.printStackTrace();
 		}
 
+		//housekeeping
 		setSize(WIDTH, HEIGHT);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setResizable(false);
@@ -66,23 +78,17 @@ public class Menu extends JFrame
 		JTabbedPane jTab = new JTabbedPane();
 		getContentPane().add(jTab);
 
-		/*jTab.addMouseListener(new MouseAdapter() {
-		      public void mouseClicked(MouseEvent mouseEvent) {
-			if (mouseEvent.getClickCount() == 1) {
-				tabChanged();
-			}
-		     }
-		});*/
-
+		//Main menu split into 2 parts, Main menu and Class Menu. class deals strictly within ONE class
 		JPanel hPanel = home("Main Menu");
 		JPanel cPanel = view("Class Menu");
 		JPanel aPanel = account();
 
-
+		//All users have access to this functionality
 		jTab.add("Home", hPanel);
 		jTab.add("Class View", cPanel);
 		jTab.add("Account View", aPanel);
 
+		//Admins have access to more functionality (Creating new Accounts and new Classes)
 		if (curr.getStatus() == 'a')
 		{
 			JPanel cAccountPanel = create("Create Account");
@@ -98,6 +104,7 @@ public class Menu extends JFrame
 
 	}
 
+	//This is the Class Menu for when the user is "viewing" a specific class
 	public Menu(Class _currClass, User _curr)
 	{
 		super("Just In Time Teaching");
@@ -113,6 +120,7 @@ public class Menu extends JFrame
 			e.printStackTrace();
 		}
 
+		//Housekeeping
 		setSize(WIDTH, HEIGHT);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setResizable(false);
@@ -128,7 +136,7 @@ public class Menu extends JFrame
 		jTab.add("Home", hPanel);
 		jTab.add("Quiz View", qPanel);
 
-
+		//again, teachers and admins have more functionality here
 		if (curr.getStatus() != 's')
 		{
 			JPanel cQuizPanel = create("Create Quiz");
@@ -145,6 +153,7 @@ public class Menu extends JFrame
 		}});
 	}
 
+	//Panel behind addstudent and Create Class
 	public JPanel create(String title)
 	{
 		JPanel createPanel = new JPanel();
@@ -158,7 +167,7 @@ public class Menu extends JFrame
 		JLabel createLbl = new JLabel(title);
 		createPanel.add(createLbl);
 
-
+		//ALL layout constraints are responsible for placing the panels in the right spot on the UI
 		layout.putConstraint(SpringLayout.WEST, createLbl, x, SpringLayout.WEST,
 			createPanel);
 		layout.putConstraint(SpringLayout.NORTH, createLbl, y, SpringLayout.NORTH,
@@ -169,6 +178,8 @@ public class Menu extends JFrame
 
 		if (title.equals("Create Class"))
 		{
+
+			//Labels and text boxes assciated with creating a Class
 			JLabel courseLbl = new JLabel("Course ID:");
 			createPanel.add(courseLbl);
 
@@ -273,6 +284,7 @@ public class Menu extends JFrame
 		}
 		else if (title.equals("Create Account"))
 		{
+			//Labels and text boxes for creating an account
 
 			JLabel idLbl = new JLabel("ID:");
 			createPanel.add(idLbl);
@@ -288,6 +300,7 @@ public class Menu extends JFrame
 
 			String[] users = { "Admin", "Teacher", "Student"};
 
+			//Upon user creation admins can create any type of user
 			userList = new JComboBox(users);
 			userList.setSelectedIndex(0);
 			userList.addActionListener(new ActionListener() {
@@ -316,6 +329,8 @@ public class Menu extends JFrame
 			logoutBtn.addActionListener(this);
 			createPanel.add(logoutBtn);
 
+
+			//Responsible for putting components on the Panel
 			layout.putConstraint(SpringLayout.WEST, idLbl, (((WIDTH/2)/2)-50), SpringLayout.WEST,
 				createPanel);
 			layout.putConstraint(SpringLayout.NORTH, idLbl, y, SpringLayout.NORTH,
@@ -370,6 +385,7 @@ public class Menu extends JFrame
 		}
 		else if (title.equals("Add Student"))
 		{
+			//Everything associated with adding a Student
 			JLabel id = new JLabel("Student ID: ");
 			createPanel.add(id);
 
@@ -418,7 +434,8 @@ public class Menu extends JFrame
 		}
 		else
 		{
-			JLabel titleLbl = new JLabel("Quiz ID:");
+			//Everything associated with creating a quiz
+			JLabel titleLbl = new JLabel("Quiz Number:");
 			createPanel.add(titleLbl);
 
 			qTitleTxt = new JTextField("", 15);
@@ -429,6 +446,8 @@ public class Menu extends JFrame
 
 			int i = 1;
 			String [] num = new String[99];
+
+			//For dropdown box for number of questions
 
 			while ((i-1) < num.length)
 			{
@@ -489,6 +508,8 @@ public class Menu extends JFrame
 
 	public JPanel account()
 	{
+		//Panel associated with changing password
+
 		JPanel aPanel = new JPanel();
 		SpringLayout layout = new SpringLayout();
 		aPanel.setLayout(layout);
@@ -528,9 +549,12 @@ public class Menu extends JFrame
 
 		aPanel.add(submitBtn);
 
+
 		JButton logoutBtn = new JButton("Logout");
 		logoutBtn.addActionListener(this);
 		aPanel.add(logoutBtn);
+
+		//constraints put components in the proper spot
 
 		layout.putConstraint(SpringLayout.WEST, accountLbl, x, SpringLayout.WEST,
 			aPanel);
@@ -587,6 +611,7 @@ public class Menu extends JFrame
 
 	}
 
+	//returns a panel that users can double click on (used in class and quiz selection)
 	public JPanel view(String title)
 	{
 		JPanel cPanel = new JPanel();
@@ -607,17 +632,15 @@ public class Menu extends JFrame
 		pane.setPreferredSize(new Dimension(300, 200));
 		cPanel.add(pane);
 
+		// If the selected panel requires a list of classes
+
 		if (title.equals("Class Menu"))
 		{
-			int tempSize = utility.getNumClasses(curr.getId());
+			//Thing below are used to set a JList to the current classes being taken or taught by the user
+
+			int tempSize = curr.getNumClasses();
+
 			String list[] = utility.showClasses(curr.getId());
-			/*
-			String list[] = {"22722 CSE 340 Intro to Software Engineering",
-				"232424 CSE 205 Java Programming",
-				"235353 CSE 240 Into to PL",
-				"345454 CSE 310 Data Structs",
-				"334433 CSE 205 Java Programming",
-				"553355 CSE 120 Digital Design"}; */
 
 			JList classList = new JList(list);
 			classList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -637,27 +660,7 @@ public class Menu extends JFrame
 				    Object o = theList.getModel().getElementAt(index);
 				    String strId = o.toString();
 				    int id = Integer.parseInt(strId);
-				    /*
-				    char [] input = o.toString().toCharArray();
-				    int i = 0;
-				    char c = input[i];
-				    String s = "";
 
-				    while (Character.isDigit(c))
-				    {
-					s += c;
-					i++;
-					c = input[i];
-				    }
-
-
-				    int id = Integer.parseInt(s);
-				    System.out.println("Double-clicked on: " + id);
-				    System.out.println(id);
-
-				    User teacher = new Teacher(1111, "Bob", "software");
-				    Class tempClass = new Class(272111, "CSE 110 Intro to Java", "This class teaches you java", teacher.getId());
-				    */
 				    utility.sendClassId(id);
 				    Class tempClass = utility.openClass(id);
 				    dispose();
@@ -679,6 +682,8 @@ public class Menu extends JFrame
 		}
 		else
 		{
+			//Does same as above but with quizIds
+
 			String list[] = utility.showQuizes(utility.getClassId());
 
 			JList quizList = new JList(list);
@@ -708,6 +713,7 @@ public class Menu extends JFrame
 			      }
 			});
 
+			//backBtn takes you to the main menu
 
 			JButton backBtn = new JButton("Main Menu");
 			backBtn.addActionListener(this);
@@ -745,6 +751,8 @@ public class Menu extends JFrame
 
 		return cPanel;
 	}
+
+	//Home panel is where the user goes prior to login, here is where announcements are displayed
 
 	public JPanel home(String home)
 	{
@@ -812,6 +820,7 @@ public class Menu extends JFrame
 	}
 
 
+	// This is the panel that displays the users grades
 
 	public JPanel grades()
 	{
@@ -883,12 +892,13 @@ public class Menu extends JFrame
 
 
 
+//this retuns a panel with an actual list of grades, as opposed to above which is the outer shell
 
-public JPanel grades(JPanel panel, SpringLayout layout, User student, int x, int y)
+	public JPanel grades(JPanel panel, SpringLayout layout, User student, int x, int y)
 	{
 
 					JPanel tempPanel = new JPanel();
-					int[] tempArray = curr.getClassList();
+					int[] tempArray = curr.getClassList(); //populates an array with the current list of classes
 
 					int i = 0;
 
@@ -896,13 +906,14 @@ public JPanel grades(JPanel panel, SpringLayout layout, User student, int x, int
 					{
 						if(curr.getStatus() != 's')
 						{
-							JLabel[] qTitleLbl = new JLabel[10]; //num quizzes times students
-							JLabel [] qGradeLbl = new JLabel[10];
+							int tempCount = utility.getQuizzesTaken(currClass.getId()); //instanciated with the total number of quizzes taken
 
-							while(i < 10)
+							JLabel[] qTitleLbl = new JLabel[tempCount];
+							JLabel [] qGradeLbl = new JLabel[tempCount];
+
+							//while loop just sets different components on the Panel
+							while(i < tempCount)
 								{
-									//System.out.println(qTitleLbl.length);
-
 									qTitleLbl[i] = new JLabel(utility.getTeacherNameInfo(currClass.getId(), i+1));
 									panel.add(qTitleLbl[i]);
 									qGradeLbl[i] = new JLabel(utility.getTeacherGrade(currClass.getId(), i+1));
@@ -911,7 +922,7 @@ public JPanel grades(JPanel panel, SpringLayout layout, User student, int x, int
 									layout.putConstraint(SpringLayout.NORTH, qTitleLbl[i], y, SpringLayout.NORTH, panel);
 									layout.putConstraint(SpringLayout.NORTH, qGradeLbl[i], y, SpringLayout.NORTH, panel);
 									layout.putConstraint(SpringLayout.WEST, qGradeLbl[i], 100, SpringLayout.EAST, qTitleLbl[i]);
-									y += 15;   //CHANGE
+									y += 15; //gap in the y direction
 
 									i++;
 
@@ -921,12 +932,14 @@ public JPanel grades(JPanel panel, SpringLayout layout, User student, int x, int
 						}
 						else
 						{
+							//else applies to teachers and admins. they need to view more than one persons score.
+
 							JLabel[] qTitleLbl = new JLabel[currClass.getNumQuizzes()];
 							JLabel [] qGradeLbl = new JLabel[currClass.getNumQuizzes()];
 
 							while(i < currClass.getNumQuizzes())
 								{
-									//System.out.println(qTitleLbl.length);
+									//while loop does the same thing but places the scores for each student
 
 									qTitleLbl[i] = new JLabel(Integer.toString(currClass.showQuizId(i)));
 									panel.add(qTitleLbl[i]);
@@ -945,44 +958,16 @@ public JPanel grades(JPanel panel, SpringLayout layout, User student, int x, int
 						}
 
 					}
-
-					//i = 0;
-
-					/*while (i < size)
-					{
-						qTitleLbl[i] = new JLabel("Quiz");
-						panel.add(qTitleLbl[i]);
-
-						qGradeLbl[i] = new JLabel("100%");
-						panel.add(qGradeLbl[i]);
-
-						layout.putConstraint(SpringLayout.WEST, qTitleLbl[i], x , SpringLayout.WEST, panel);
-						layout.putConstraint(SpringLayout.NORTH, qTitleLbl[i], y, SpringLayout.NORTH, panel);
-						layout.putConstraint(SpringLayout.NORTH, qGradeLbl[i], y, SpringLayout.NORTH, panel);
-						layout.putConstraint(SpringLayout.WEST, qGradeLbl[i], 100, SpringLayout.EAST, qTitleLbl[i]);
-						y += 45;   //CHANGE
-
-						i++;
-					}*/
-
+	//returns the sub-panel with the grades on it
 	return tempPanel;
 	}
-
-
-
-
-public JPanel grades(Quiz gradeQuiz)
-{
-	return null;
-}
-
-
 
 
 	public void actionPerformed(ActionEvent e)
 	{
 		String buttonString = e.getActionCommand();
 
+		//if user clicks logout, then they are logged out and taken to the loginFrame
 		if (buttonString.equals("Logout"))
 		{
 			dispose();
@@ -998,15 +983,16 @@ public JPanel grades(Quiz gradeQuiz)
 				String desc = descTxt.getText();
 				int  nUser = Integer.parseInt(teacherTxt.getText());
 
-				//User tUser = utiliity.openUser(nUser);
-			/*	if (tempU != null)
+				User tUser = utility.openUser(nUser); //this checks the database to ensure there is a teacher selected exists
+				if (tUser.getStatus() == 't')
 				{
-					utility.writeClass(id, title, desc, nUser);*/
+					utility.writeClass(id, title, desc, nUser);
+					utility.addClass(id, nUser);
 					createCErrorLbl.setText("Class Created");
-			/*	}
+				}
 				else
-					createCErrorLbl.setText("Class failed to be created");
-			*/
+					createCErrorLbl.setText("Class NOT Created, Check teacherId");
+
 			}
 			catch(Exception ex)
 			{
@@ -1017,6 +1003,8 @@ public JPanel grades(Quiz gradeQuiz)
 		{
 			Object selected = userList.getSelectedItem();
 			String combo = selected.toString();
+
+			//Different accounts can be created. Admins can set their passwors. teachers and student passwords are auto-generated
 
 			try {
 				int id = Integer.parseInt(idTxt.getText());
@@ -1059,13 +1047,20 @@ public JPanel grades(Quiz gradeQuiz)
 		}
 		else if (buttonString.equals("Add"))
 		{
+			//for adding a student to a class
 			try {
 						int id = Integer.parseInt(studentTxt.getText());
 
-						utility.addClass(currClass.getId(), id);
+						User person = utility.openUser(id); //This ensures that the student exists before we add them to the database
 
-						createSErrorLbl.setText("Student Created");
-
+						if(person != null)
+						{
+							utility.addClass(currClass.getId(), id);
+							createSErrorLbl.setText("Student Created");
+							studentTxt.setText("");
+						}
+						else
+							createSErrorLbl.setText("Not a valid Student ID, please contact Admins");
 
 				}
 				catch (Exception ex)
@@ -1081,14 +1076,16 @@ public JPanel grades(Quiz gradeQuiz)
 		}
 		else if (buttonString.equals("Continue"))
 		{
+			//moves you into the QuizFrame with the appropriate quiz
+
 			Object selected = numList.getSelectedItem();
 			int num = Integer.parseInt(selected.toString());
 
 			int tempQuizId = Integer.parseInt(qTitleTxt.getText());
 
-			dispose();
-			QuizFrame q = new QuizFrame(tempQuizId, num, currClass, curr); // 5 == quiz changed
-			q.setVisible(true);
+			dispose(); //destroys the current frame
+			QuizFrame q = new QuizFrame(tempQuizId, num, currClass, curr); // instanciates the selected quiz
+			q.setVisible(true); //shows new panel
 		}
 		else
 			System.out.println("Unexpected error.");
@@ -1096,6 +1093,7 @@ public JPanel grades(Quiz gradeQuiz)
 
 	private void passwordChangeActionPerformed(ActionEvent event)
 	{
+		//Changing password
 		try
 		{
 			String oldPass = new String(cPassTxt.getPassword());
@@ -1116,6 +1114,7 @@ public JPanel grades(Quiz gradeQuiz)
 		}
 	}
 
+	//When creating a user, if youre creating an admin, you may set their password, otherwise it is autogenerated
 	private void comboBoxActionPerformed(ActionEvent event)
 	{
 		Object selected = userList.getSelectedItem();
@@ -1132,6 +1131,7 @@ public JPanel grades(Quiz gradeQuiz)
 		}
 	}
 
+	//Clears the data in the tabs upon switching
 	private void tabChanged()
 	{
 		if (currClass == null)

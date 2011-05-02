@@ -1,20 +1,19 @@
-/* Team Name: Jakl
-*  Teacher class
-*  Last Modified By: Jeremy Parmenter
-*  Last Modified On: 4/1/11
-*/
-
 /*
-*	TODO: create quiz?
+*	Account type for a Teacher
+*
+*
+*
+* Authors:
+* Jeremy Parmenter
+* Alex Holguin
+* John Kevin Canez
 */
 
 import java.util.*;
 
 public class Teacher extends User
 {
-
-	//public static Vector<Class> classList;
-
+	//Constructor for a teacher with no classes
 	public Teacher(int _id, String _name, String _pass)
 	{
 		super(_id, _name, _pass);
@@ -22,6 +21,7 @@ public class Teacher extends User
 		classList = new Vector<Integer>();
 	}
 
+	//Constructor for a teacher WITH classes
 	public Teacher(int _id, String _name, String _pass, int[] tempClassArray)
 	{
 		super(_id, _name, _pass);
@@ -34,6 +34,7 @@ public class Teacher extends User
 		}
 	}
 
+	//returns an array of classIds
 	public int[] getClassList()
 	{
 		int[] tempArray = new int[classList.size()];
@@ -46,17 +47,13 @@ public class Teacher extends User
 		return tempArray;
 	}
 
+	//returns the number of classes the teacher is teaching
 	public int getNumClasses()
 	{
 		return classList.size();
 	}
 
-
-	public void createQuiz()
-	{
-		return;
-	}
-
+	//Old create User method, used for testing
 	public User createStudents(int id, String name, String pass)
 	{
 		Student student = new Student(id, name, pass);
@@ -68,8 +65,4 @@ public class Teacher extends User
 		return "\n\nTeacher: " + super.toString();
 	}
 
-	public void addClass()
-	{
-		//ADD
-	}
 }
