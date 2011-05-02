@@ -14,6 +14,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
 
+
 public class LoginFrame extends JFrame implements ActionListener
 {
 	public final int WIDTH = 350;
@@ -22,6 +23,7 @@ public class LoginFrame extends JFrame implements ActionListener
 	private final JTextField idTxt;
 	private final JPasswordField passTxt;
 
+	//Constructor sets the size of the Frame
 	public LoginFrame()
 	{
 		super("Just In Time Learning");
@@ -35,6 +37,8 @@ public class LoginFrame extends JFrame implements ActionListener
 		{
 			e.printStackTrace();
 		}
+
+		//Setting and placing variables
 
 		setSize(WIDTH, HEIGHT);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -124,7 +128,7 @@ public class LoginFrame extends JFrame implements ActionListener
 		String buttonString = e.getActionCommand();
 		User curr = null;
 
-		if (buttonString.equals("Login"))
+		if (buttonString.equals("Login")) //When the user tries to login, check their userID name and password
 		{
 
 
@@ -137,11 +141,12 @@ public class LoginFrame extends JFrame implements ActionListener
 
 				temp = utility.openUser(id);
 
-				if ((temp != null) && (pass.compareTo(temp.getPass()) == 0))
+				if ((temp != null) && (pass.compareTo(temp.getPass()) == 0)) //Checks the info given against that in the database
 					curr = temp;
 				else
 					errorLbl.setText("Id or Pass or incorrect");
 
+				//If the login info is valid,take the user to the Menu
 				if (curr != null)
 				{
 					dispose();
@@ -149,7 +154,7 @@ public class LoginFrame extends JFrame implements ActionListener
 					gui.setVisible(true);
 				}
 				else
-					errorLbl.setText("User does not exist");
+					errorLbl.setText("User does not exist"); //Meaningful error message
 			}
 			catch (Exception ex)
 			{

@@ -1,6 +1,7 @@
 /*
-*
-*
+*	This utility class handles ALL of the database IO
+*	The format of most of the methods is the same
+*	Execute sqlQuery and return the value if need be
 *
 *
 * Authors:
@@ -15,60 +16,48 @@ import java.sql.*;
 
 public class jaklUtilities
 {
-	private String url = "jdbc:postgresql://70.190.95.77:5432/jitt";
+	private String url = "jdbc:postgresql://70.190.95.77:5432/jitt"; //URL of our database
 	public int currClass = 0;
 	public jaklUtilities()
 	{
 		try
 		{
-			java.lang.Class.forName("org.postgresql.Driver");
+			java.lang.Class.forName("org.postgresql.Driver"); //jdbc Driver
 		}
 		catch(Exception e)
 		{
-			System.out.println("This should never happen");
+			System.out.println("Could not find jdbc driver"); // If you do not have the driver in your classpath
 		}
 	}
 
+	//Executes the sql query for writing an admin with the data the user gives it
 	public void writeAdmin(int id, String name, String pass, char acctType)
 	{
 		 try
 		 {
-			// Load the JDBC driver.
-			//java.lang.Class.forName("org.postgresql.Driver");
+			Connection conn = DriverManager.getConnection(url,"postgres","jakl"); //connection to db
 
-			// Establish the connection to the database
-			//String url = "jdbc:postgresql://localhost:5432/jakl";
-			Connection conn = DriverManager.getConnection(url,"postgres","jakl");
+			Statement st = conn.createStatement(); //st is linked to the connection
 
-			//This is how you write. just create a statement and execute a sql query.
-
-			Statement st = conn.createStatement();
 			st.execute("INSERT INTO \"user\"\nVALUES\n(" + id + ", '" + name + "', '" + pass + "', '" + acctType + "');");
 
-			conn.close();
+			conn.close(); //connection closed
 
 		}
 
 		 catch (Exception e)
 		 {
-		   System.out.println("Got an exception! ");
+		   System.out.println("Got an exception!");
 		   System.out.println(e.getMessage());
 		 }
 	}
 
-
+	//Writes the teacher to the database with the data given
 	public void writeTeacher(int id, String name, String pass, char acctType)
 		{
 			 try
 			 {
-				// Load the JDBC driver.
-				//java.lang.Class.forName("org.postgresql.Driver");
-
-				// Establish the connection to the database
-				//String url = "jdbc:postgresql://localhost:5432/jakl";
 				Connection conn = DriverManager.getConnection(url,"postgres","jakl");
-
-				//This is how you write. just create a statement and execute a sql query.
 
 				Statement st = conn.createStatement();
 				st.execute("INSERT INTO \"user\"\nVALUES\n(" + id + ", '" + name + "', '" + pass + "', '" + acctType + "');");
@@ -84,14 +73,13 @@ public class jaklUtilities
 			 }
 	}
 
+	//Writes student same way as above
 	public void writeStudent(int id, String name, String pass, char acctType)
 		{
 			 try
 			 {
 				Connection conn = DriverManager.getConnection(url,"postgres","jakl");
 
-				//This is how you write. just create a statement and execute a sql query.
-
 				Statement st = conn.createStatement();
 				st.execute("INSERT INTO \"user\"\nVALUES\n(" + id + ", '" + name + "', '" + pass + "', '" + acctType + "');");
 				conn.close();
@@ -104,8 +92,11 @@ public class jaklUtilities
 		}
 
 
+	//Open user takes a user id and returns the user
 	public User openUser(int id)
 		{
+			//Data to pull from the database
+
 			String strUser = null;
 			String strPass = null;
 			String strType = null;
@@ -113,10 +104,9 @@ public class jaklUtilities
 			String numClasses;
 			try
 			{
-				//java.lang.Class.forName("org.postgresql.Driver");
-
-				//String url = "jdbc:postgresql://localhost:5432/jakl";
 				Connection conn = DriverManager.getConnection(url,"postgres","jakl");
+
+			   //One by one, the data lised above is pulled from the db and stored into their variable
 
 			   Statement stmt = conn.createStatement();
 			   ResultSet user = stmt.executeQuery("SELECT username from \"user\" WHERE id=" + id);
@@ -141,24 +131,25 @@ public class jaklUtilities
 				   strType = type.getString(1);
 			   }
 			   type.close();
-				//SELECT array_to_string(ARRAY[class], ',') FROM "user" WHERE id=9999
 			   ResultSet classes = stmt.executeQuery("SELECT array_to_string(ARRAY[class], ',') from \"user\" WHERE id=" + id);
 			   classes.next();
 			   numClasses = classes.getString(1);
 			   int[] tempArray = getClassArray(numClasses);
 			   conn.close();
 
+			//Checks to see what kind of user is going to be returned
+
 			charType = strType.charAt(0);
 			if (charType == 't')
 			{
 				if(tempArray != null)
 				{
-				Teacher teach = new Teacher(id, strUser, strPass, tempArray);
+				Teacher teach = new Teacher(id, strUser, strPass, tempArray); //If the teacher does have classes
 				return teach;
 				}
 				else
 				{
-				Teacher teach = new Teacher(id, strUser, strPass);
+				Teacher teach = new Teacher(id, strUser, strPass);  //If the teacher has NO classes
 				return teach;
 				}
 			}
@@ -172,12 +163,12 @@ public class jaklUtilities
 			{
 				if(tempArray != null)
 				{
-				Student student = new Student(id,strUser,strPass, tempArray);
+				Student student = new Student(id,strUser,strPass, tempArray); //If the Student is registered for classes constructor
 				return student;
 				}
 				else
 				{
-				Student student = new Student(id, strUser,strPass);
+				Student student = new Student(id, strUser,strPass); //if the student has no classes
 				return student;
 				}
 			}
@@ -190,13 +181,12 @@ public class jaklUtilities
 
 		}
 
+	//Writes given class to the database
 	public void writeClass(int id, String name, String description, int teacher)
 	{
 		 try
 		 {
 			Connection conn = DriverManager.getConnection(url,"postgres","jakl");
-
-			//This is how you write. just create a statement and execute a sql query.
 
 			Statement st = conn.createStatement();
 			st.execute("INSERT INTO \"class\"\nVALUES\n(" + id + ", '" + name + "', '" + description + "', NULL," + teacher + ")");
@@ -212,6 +202,9 @@ public class jaklUtilities
 		 }
 	}
 
+	//Opens class from hte database
+	// Data is pulled one by one as it was above
+	// the temp variables are then instanciated into a class and returned
 	public Class openClass(int courseId)
 	{
 		 String title = null;
@@ -267,6 +260,7 @@ public class jaklUtilities
 
 	}
 
+	//returns the number of classes the user is registered for
 	public int getNumClasses(int id)
 	{
 		int i = 0;
@@ -288,6 +282,7 @@ public class jaklUtilities
 	   }
    }
 
+	//Returns an array of classes, used in the frames where you double click
 	public String[] showClasses(int id)
 	{
 		int i = 0;
@@ -320,6 +315,7 @@ public class jaklUtilities
 		}
 	}
 
+	//Same as above, used in the frame where you have to double quick a quiz (In Menu)
 	public String[] showQuizes(int classId)
 		{
 			int i = 0;
@@ -352,6 +348,7 @@ public class jaklUtilities
 			}
 	}
 
+	//Executes query to add class
 	public void addClass(int classId, int id)
 	{
 		try
@@ -366,6 +363,8 @@ public class jaklUtilities
 		}
 	}
 
+	//method used to change the password
+	// returns wether the change was successful or not
 	public boolean changePass(int id, String user, String pass, String nPass)
 	{
 		String strPass = null;
@@ -401,9 +400,10 @@ public class jaklUtilities
 		return false;
 	}
 
+//Returns teh quiz with the given ID... if it exists.
 public Quiz openQuiz(int quizId)
 		{
-			//System.out.println("HERESZFDFKLDSHSHDHGJLKSD");
+			//All of these variables are filled over several queries
 			int tempQuestionNumber;
 			String[] tempQuestion = null;
 			String[] tempAnswer1 = null;
@@ -480,6 +480,8 @@ public Quiz openQuiz(int quizId)
 
 		}
 
+		//Quiz is written with the data it was handed.
+		// prior to going into the database the arrays must be placed in strings
 		public void writeQuiz(int quizId, String[] questions, String[] answers1, String[] answers2, String[] answers3, String[] answers4, int[] correctAnswers, int classId)
 		{
 			String class_quiz_id = Integer.toString(classId) + Integer.toString(quizId);
@@ -488,8 +490,13 @@ public Quiz openQuiz(int quizId)
 				{
 					Connection conn = DriverManager.getConnection(url,"postgres","jakl");
 					Statement st = conn.createStatement();
+					//This is where the data is converted into a string then added
+
 					st.executeUpdate("INSERT INTO \"quiz\"\nVALUES\n(" + final_class_quiz_id + ", '{" + sArrayToString(questions) + "}', '{" + sArrayToString(answers1)+ "}', '{" + sArrayToString(answers2) + "}', '{" + sArrayToString(answers3) + "}', '{" + sArrayToString(answers4) + "}', '{" + intArrayToString(correctAnswers) + "}')");
 					Statement st1 = conn.createStatement();
+
+					//The quiz is added to the class here
+
 					st1.executeUpdate("UPDATE \"class\" SET quizids = quizids || ARRAY["+ final_class_quiz_id + "] WHERE id=" + classId);
 
 					System.out.println("success!");
@@ -501,6 +508,7 @@ public Quiz openQuiz(int quizId)
 				}
 		}
 
+		//Returns the array of correct answers given the prper quiz id
 		public int[] getCorrectAnswerArray(int quizId)
 		{
 			int i = 0;
@@ -528,6 +536,7 @@ public Quiz openQuiz(int quizId)
 			}
 		}
 
+		//returns the question at a given index (always used within a loop)
 		public String getQuestion(int index, int quizId)
 		{
 			String question = null;
@@ -549,6 +558,8 @@ public Quiz openQuiz(int quizId)
 				return null;
 			}
 		}
+
+		//Retuns the answer of a given question and index
 
 		public String getAnswer(int questIndex, int ansIndex, int quizId)
 		{
@@ -572,6 +583,7 @@ public Quiz openQuiz(int quizId)
 		}
 
 
+	//Returns an array of classes that the user is registered for
 	public int[] getClassArray(String str)
 	{
 		Vector<Integer> classListVect = new Vector<Integer>();
@@ -594,6 +606,7 @@ public Quiz openQuiz(int quizId)
 		return temp;
 	}
 
+	//The users grade is written to the database
 	public void writeGrade(int quizId, int grade, int id, int classId)
 	{
 		String student_class_quiz_id =  Integer.toString(id) + Integer.toString(classId) + Integer.toString(quizId);
@@ -614,7 +627,7 @@ public Quiz openQuiz(int quizId)
 
 
 
-
+	//Returns the grade of a user (used in loops)
 	public String getGrade(int id, int currClass, int index)
 		{
 			try
@@ -644,7 +657,7 @@ public Quiz openQuiz(int quizId)
 			}
 		}
 
-
+//Get grades for a teacher, used in loops
 public String getTeacherGrade(int currClassId, int index)
 {
 			try
@@ -675,6 +688,7 @@ public String getTeacherGrade(int currClassId, int index)
 
 }
 
+//Returns The Quiz id for a certain sttudent
 public String getTeacherNameInfo(int currClassId, int index)
 {
 			try
@@ -710,7 +724,7 @@ public String getTeacherNameInfo(int currClassId, int index)
 
 
 
-
+//Used to convert a string into an array, some queries return arrays as (5,5,5,5)
 	public String[] getQuizArray(String str)
 	{
 		Vector<String> quizStuff = new Vector<String>();
@@ -733,6 +747,7 @@ public String getTeacherNameInfo(int currClassId, int index)
 		return temp;
 	}
 
+	//Converts an array to a string
 	public String sArrayToString(String[] tempArray)
 	{
 		String s = "";
@@ -781,6 +796,7 @@ public String getTeacherNameInfo(int currClassId, int index)
 		}
 	}
 
+	//converts an int array to a string (used for placing data in the datatbase)
 	public String intArrayToString(int[] temp)
 	{
 		String s = "";
@@ -797,6 +813,7 @@ public String getTeacherNameInfo(int currClassId, int index)
 
 	}
 
+	//Returns the number of quizzes a class has taken
 	public int getQuizzesTaken(int classId)
 	{
 		int i = 0;
@@ -821,101 +838,4 @@ public String getTeacherNameInfo(int currClassId, int index)
 	   }
    }
 
-
-
-	/*public int[] getRoster(int classId)
-	{
-			int i = 0;
-			try
-			{
-				Connection conn = DriverManager.getConnection(url, "postgres","jakl");
-				Statement st = conn.createStatement();
-				ResultSet count = st.executeQuery("SELECT COUNT(correctanswer) FROM \"user\" WHERE id =" + classId);
-				count.next();
-				i = count.getInt(1);
-				int[] correctAnswers = new int[i];
-				count.close();
-				ResultSet users = st.executeQuery("SELECT array_to_string(ARRAY[correctanswer], ',') from \"quiz\" WHERE id=" + quizId);
-				while (answers.next())
-				{
-					correctAnswers = getClassArray(answers.getString(1));
-				}
-				answers.close();
-				conn.close();
-				return correctAnswers;
-			}
-			catch (Exception e)
-			{
-				return null;
-			}
-
-	}*/
-
-
 }
-
-
-
-
-
-/*OLD CODE //////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
-
-
-	public Admin openAdmin(int id)
-	{
-		String user = null;
-		String pass = null;
-			try {
-			FileInputStream fstream = new FileInputStream("/home/alex/workspace/prototype/users/admin/" + id + ".txt");
-			// Get the object of DataInputStream
-			DataInputStream in = new DataInputStream(fstream);
-			BufferedReader br = new BufferedReader(new InputStreamReader(in));
-
-
-			String strLine;
-			//Read File Line By Line
-			user = br.readLine();
-			pass = br.readLine();
-			//Close the input stream
-			in.close();
-			}catch (Exception e){//Catch exception if any
-			return null;
-			}
-
-		Admin admin = new Admin(id, user, pass);
-		return admin;
-	}
-
-
-	public Admin writeAdmin(int id, String user, String pass)
-	{
-		Writer writer = null;
-		String text = null;
-		System.out.println("Enter in data to be entered");
-		Scanner scan = new Scanner(System.in);
-		text = scan.nextLine();
-
-		try {
-		    //String text = "This is a text file";
-
-		    File file = new File("/home/alex/workspace/prototype/users/admin/" + id + ".txt");
-		    writer = new BufferedWriter(new FileWriter(file));
-		    writer.write(text);
-		} catch (FileNotFoundException e) {
-		    e.printStackTrace();
-		} catch (IOException e) {
-		    e.printStackTrace();
-		} finally {
-		    try {
-			}
-		    } catch (IOException e) {
-			e.printStackTrace();
-		    }
-		}
-	    }
-	}
-}
-*/

@@ -1,6 +1,6 @@
 /*
 *
-*
+*	QuizFrame is where users Take and view Quizes
 *
 *
 * Authors:
@@ -17,6 +17,7 @@ import javax.swing.event.*;
 
 public class QuizFrame extends JFrame implements ActionListener
 {
+	//Preping the local vars
 	public static int WIDTH = 600;
 	public static int HEIGHT = 400;
 
@@ -53,6 +54,7 @@ public class QuizFrame extends JFrame implements ActionListener
 
 	private static int[] usersAnswers;
 
+	//This constructor is used when there is no quiz instanciated ex: when the user is creating a quiz
 	public QuizFrame(int _quizId, int _size, Class _currClass, User _curr)
 	{
 		super("Just In Time Learning");
@@ -82,6 +84,7 @@ public class QuizFrame extends JFrame implements ActionListener
 		add(panel);
 	}
 
+	//This constructor is used when the user IS taking a quiz
 	public QuizFrame(Quiz _quiz, Class _currClass, User _curr)
 	{
 		super("Just In Time Learning");
@@ -114,11 +117,9 @@ public class QuizFrame extends JFrame implements ActionListener
 		add(takeQuizDisplay);
 	}
 
+	//Where the quiz is created
 	public JPanel createQuiz()
 	{
-
-		System.out.println(i + " " + size);
-
 		JPanel panel = new JPanel();
 		SpringLayout layout = new SpringLayout();
 		panel.setLayout(layout);
@@ -126,6 +127,8 @@ public class QuizFrame extends JFrame implements ActionListener
 		int x = 25;
 		int y = 25;
 		int inc = 45;
+
+		// Setting variables
 
 		JLabel titleLbl = new JLabel(title + " Creation Page");
 		panel.add(titleLbl);
@@ -177,15 +180,11 @@ public class QuizFrame extends JFrame implements ActionListener
 		submitBtn.addActionListener(this);
 		panel.add(submitBtn);
 
-		if (i == size)
-		{
-			submitBtn.setText("Submit");
-		}
-
 		cancelBtn = new JButton("Cancel");
 		cancelBtn.addActionListener(this);
 		panel.add(cancelBtn);
 
+		//Constraints are placing the components
 		layout.putConstraint(SpringLayout.WEST, titleLbl, ((WIDTH/2)-100), SpringLayout.WEST,
 			panel);
 		layout.putConstraint(SpringLayout.NORTH, titleLbl, y, SpringLayout.NORTH,
@@ -267,6 +266,7 @@ public class QuizFrame extends JFrame implements ActionListener
 
 	}
 
+	//Panel for taking a quiz
 	public JPanel takeQuiz()
 	{
 
@@ -277,6 +277,8 @@ public class QuizFrame extends JFrame implements ActionListener
 		int x = 25;
 		int y = 25;
 		int inc = 45;
+
+		//variables are instanciated and put in place
 
 		JLabel titleLbl = new JLabel("Quiz Title");
 		panel.add(titleLbl);
@@ -314,15 +316,9 @@ public class QuizFrame extends JFrame implements ActionListener
 		submitBtn.addActionListener(this);
 		panel.add(submitBtn);
 
-		/*if (i == size)
-		{
-			submitBtn.setText("Submit");
-		}*/
-
 		cancelBtn = new JButton("Cancel");
 		cancelBtn.addActionListener(this);
 		panel.add(cancelBtn);
-
 
 		System.out.println(i);
 		question();
@@ -388,33 +384,19 @@ public class QuizFrame extends JFrame implements ActionListener
 	}
 
 	public void question()
-	{// DB
+	{
+		//This is where the questions and answers are displated (i is a global var)
 
 		qLbl.setText(quiz.getQuestion(i));
 		radio1.setText(quiz.getAnswer1(i));
 		radio2.setText(quiz.getAnswer2(i));
 		radio3.setText(quiz.getAnswer3(i));
 		radio4.setText(quiz.getAnswer4(i));
-
-	/*
-		System.out.println(utility.getQuestion(i, quiz.getId()));
-		qLbl.setText(utility.getQuestion(i, quiz.getId()));
-
-		radio1.setText(utility.getAnswer(i, 1, quiz.getId()));
-
-		radio2.setText(utility.getAnswer(i, 2, quiz.getId()));
-
-		radio3.setText(utility.getAnswer(i, 3, quiz.getId()));
-
-		radio4.setText(utility.getAnswer(i, 4, quiz.getId()));*/
 	}
 
 
 public void actionPerformed(ActionEvent event)
 {
-	//System.out.println(event.getActionCommand());
-	//System.out.println(event.getActionCommand().equals("qCont"));
-
 	if(event.getActionCommand().equals("Cancel"))
 	{
 		Menu gui = new Menu(currClass, curr);
@@ -422,19 +404,19 @@ public void actionPerformed(ActionEvent event)
 		this.dispose();
 	}
 
-
+	//If youre creating a quiz:
 	else if(event.getActionCommand().equals("Continue"))
 	{
-
+		//Ensures that all of the fields have something in them
 		if((answer1.getText().length() > 0) && (answer2.getText().length() > 0) && (answer3.getText().length() > 0) &&
 			(answer4.getText().length() > 0) && (questionTxt.getText().length() > 0))
 		{
-
+			//Ensures you are not on the last question
 			if (i < size)
 			{
+				//Instanciates the arrays to hold the questions and answers
 				if(i == 0)
 				{
-				//System.out.println("INSTANCIATED STUFF");
 				source = event.getSource();
 				questions = new String[size];
 				ans1 = new String[size];
@@ -444,9 +426,7 @@ public void actionPerformed(ActionEvent event)
 				correctAnswers = new int[size];
 				}
 
-			//System.out.println("GOT TO PULLING DATA");
-
-
+				//grabs the data entered and puts them in the array
 				questions[i] = questionTxt.getText();
 				ans1[i] = answer1.getText();
 				ans2[i] = answer2.getText();
@@ -458,6 +438,7 @@ public void actionPerformed(ActionEvent event)
 				boolean answer3Flag = radio3.isSelected();
 				boolean answer4Flag = radio4.isSelected();
 
+				//This is used for grading, depending on the selected answer, that is stored in an int array,and the two are then compared
 				if(answer1Flag)
 				{
 					correctAnswers[i] = 1;
@@ -477,6 +458,7 @@ public void actionPerformed(ActionEvent event)
 
 				i++;
 
+				//If youre on the last question, write the quiz to the database
 				if(i == size)
 				{
 					int tempClassId = currClass.getId();
@@ -485,7 +467,7 @@ public void actionPerformed(ActionEvent event)
 					gui.setVisible(true);
 					this.dispose();
 				}
-
+					//Set the fields back to blank
 					questionTxt.setText("");
 					answer1.setText("");
 					answer2.setText("");
@@ -502,12 +484,10 @@ public void actionPerformed(ActionEvent event)
 
 	else if(event.getActionCommand().equals("qCont"))
 	{
-		//System.out.println(i + " " + size);
 
 		if(i == 0)
 		{
 			usersAnswers = new int[quiz.numQuestions()];
-			//System.out.println("INSTANCIATED");
 		}
 
 		boolean answer1 = radio1.isSelected();
@@ -537,16 +517,15 @@ public void actionPerformed(ActionEvent event)
 		if(i == size)
 		{
 
-			//THIS IS WEHERE WE WILL GRADE
-			System.out.println("Right before writeGrade call");
+			//THIS IS WEHERE WE  GRADE
 			utility.writeGrade(quiz.getId(), grade(), curr.getId(), currClass.getId());
-			System.out.println("Right after writeGrade call");
 			Menu gui = new Menu(currClass, curr);
 			gui.setVisible(true);
 			this.dispose();
 		}
 		else
 		{
+			//Else goes to the next question
 			this.remove(takeQuizDisplay);
 			takeQuizDisplay = takeQuiz();
 			this.add(takeQuizDisplay);
@@ -558,6 +537,7 @@ public void actionPerformed(ActionEvent event)
 
 }
 
+//To grade the quiz we just compare 2 int arrays and return the % that matched (as an int)
 public int grade()
 {
 	int j = 0;
@@ -577,9 +557,7 @@ public int grade()
 
 	}
 
-	System.out.println(tempGrade);
 	double tempFinalGrade = ((tempGrade*100)/size);
-	System.out.println(tempFinalGrade);
 	return (int)tempFinalGrade;
 	}
 

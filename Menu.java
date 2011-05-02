@@ -96,7 +96,7 @@ public class Menu extends JFrame implements ActionListener
 			jTab.add("Create Account", cAccountPanel);
 			jTab.add("Create Class", cClassPanel);
 		}
-
+		//Allows us to clear all the fields when the tab is changed
 		jTab.addChangeListener(new ChangeListener() {
 		public void stateChanged(ChangeEvent e) {
 			tabChanged();
@@ -153,13 +153,14 @@ public class Menu extends JFrame implements ActionListener
 		}});
 	}
 
-	//Panel behind addstudent and Create Class
+	//Panel behind addStudent and Create Class
 	public JPanel create(String title)
 	{
 		JPanel createPanel = new JPanel();
 		SpringLayout layout = new SpringLayout();
 		createPanel.setLayout(layout);
 
+		//These vars are for incrementing placement of components on the Panel
 		int x = 25;
 		int y = 25;
 		int inc = 45;
@@ -183,6 +184,7 @@ public class Menu extends JFrame implements ActionListener
 			JLabel courseLbl = new JLabel("Course ID:");
 			createPanel.add(courseLbl);
 
+			//Adding the field for the Course Name, same process done on next few lines
 			courseTxt = new JTextField("", 10);
 			createPanel.add(courseTxt);
 
@@ -197,7 +199,7 @@ public class Menu extends JFrame implements ActionListener
 
 			descTxt = new JTextArea(5, 20);
 
-			descTxt.setWrapStyleWord(true);
+			descTxt.setWrapStyleWord(true);   //This allows the text to wrap within the Description Text Area
 			descTxt.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 			JScrollPane pane = new JScrollPane(descTxt, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                                        JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -222,6 +224,7 @@ public class Menu extends JFrame implements ActionListener
 			createCErrorLbl = new JLabel("");
 			createPanel.add(createCErrorLbl);
 
+			//These constraits Only place things on the panel
 			layout.putConstraint(SpringLayout.WEST, courseLbl, (((WIDTH/2)/2)-50), SpringLayout.WEST,
 				createPanel);
 			layout.putConstraint(SpringLayout.NORTH, courseLbl, y, SpringLayout.NORTH,
@@ -298,7 +301,7 @@ public class Menu extends JFrame implements ActionListener
 			nameTxt = new JTextField("", 10);
 			createPanel.add(nameTxt);
 
-			String[] users = { "Admin", "Teacher", "Student"};
+			String[] users = { "Admin", "Teacher", "Student"}; //The type of accounts the Admin can create
 
 			//Upon user creation admins can create any type of user
 			userList = new JComboBox(users);
@@ -468,7 +471,7 @@ public class Menu extends JFrame implements ActionListener
 			backBtn.addActionListener(this);
 			createPanel.add(backBtn);
 
-
+			//Place the above components on the panel
 			layout.putConstraint(SpringLayout.WEST, titleLbl, (((WIDTH/2/2)-50)), SpringLayout.WEST,
 				createPanel);
 			layout.putConstraint(SpringLayout.NORTH, titleLbl, y, SpringLayout.NORTH,
@@ -650,7 +653,7 @@ public class Menu extends JFrame implements ActionListener
 			classList.setSelectedIndex(-1);
 			pane.setViewportView(classList);
 
-
+			//Listener for the double click event, whatever you click on will be instanciated and opened
 			classList.addMouseListener( new MouseAdapter() {
 			      public void mouseClicked(MouseEvent mouseEvent) {
 				JList theList = (JList) mouseEvent.getSource();
@@ -694,6 +697,7 @@ public class Menu extends JFrame implements ActionListener
 			quizList.setSelectedIndex(-1);
 			pane.setViewportView(quizList);
 
+			//Listener for the double click
 			quizList.addMouseListener( new MouseAdapter() {
 			      public void mouseClicked(MouseEvent mouseEvent) {
 				JList theList = (JList) mouseEvent.getSource();
@@ -835,12 +839,14 @@ public class Menu extends JFrame implements ActionListener
 		JLabel titleLbl;
 		JLabel qLbl;
 
+		//Student and tacher grades are displated differently
+
 		if(curr.getStatus() == 's')
 		{
 		titleLbl = new JLabel("Grades");
 		gradesPanel.add(titleLbl);
 
-		qLbl = new JLabel("QuizID");
+		qLbl = new JLabel("QuizNumber");
 		gradesPanel.add(qLbl);
 		}
 		else
@@ -848,7 +854,7 @@ public class Menu extends JFrame implements ActionListener
 		titleLbl = new JLabel("Grades");
 		gradesPanel.add(titleLbl);
 
-		qLbl = new JLabel("QuizID-StudentID");
+		qLbl = new JLabel("QuizNumber-StudentID");
 		gradesPanel.add(qLbl);
 		}
 
@@ -906,6 +912,8 @@ public class Menu extends JFrame implements ActionListener
 					{
 						if(curr.getStatus() != 's')
 						{
+							//Teachers need to be able to see all the scores in their class
+
 							int tempCount = utility.getQuizzesTaken(currClass.getId()); //instanciated with the total number of quizzes taken
 
 							JLabel[] qTitleLbl = new JLabel[tempCount];
@@ -914,14 +922,19 @@ public class Menu extends JFrame implements ActionListener
 							//while loop just sets different components on the Panel
 							while(i < tempCount)
 								{
+									//While loop sets the information to be displayed and puts it on the panel
+
+									//int tempId = Integer.parseInt(utility.getTeacherNameInfo(currClass.getId(), i+1));
+									//tempId -= currClass.getId();
 									qTitleLbl[i] = new JLabel(utility.getTeacherNameInfo(currClass.getId(), i+1));
+									//qTitleLbl[i] = new JLabel(Integer.toString(tempId));
 									panel.add(qTitleLbl[i]);
 									qGradeLbl[i] = new JLabel(utility.getTeacherGrade(currClass.getId(), i+1));
 									panel.add(qGradeLbl[i]);
-									layout.putConstraint(SpringLayout.WEST, qTitleLbl[i], x-15 , SpringLayout.WEST, panel);
+									layout.putConstraint(SpringLayout.WEST, qTitleLbl[i], x+15 , SpringLayout.WEST, panel);
 									layout.putConstraint(SpringLayout.NORTH, qTitleLbl[i], y, SpringLayout.NORTH, panel);
 									layout.putConstraint(SpringLayout.NORTH, qGradeLbl[i], y, SpringLayout.NORTH, panel);
-									layout.putConstraint(SpringLayout.WEST, qGradeLbl[i], 100, SpringLayout.EAST, qTitleLbl[i]);
+									layout.putConstraint(SpringLayout.WEST, qGradeLbl[i], 145, SpringLayout.EAST, qTitleLbl[i]);
 									y += 15; //gap in the y direction
 
 									i++;
@@ -932,7 +945,7 @@ public class Menu extends JFrame implements ActionListener
 						}
 						else
 						{
-							//else applies to teachers and admins. they need to view more than one persons score.
+							//else applies to students, who only need to view their scores.
 
 							JLabel[] qTitleLbl = new JLabel[currClass.getNumQuizzes()];
 							JLabel [] qGradeLbl = new JLabel[currClass.getNumQuizzes()];
@@ -963,6 +976,8 @@ public class Menu extends JFrame implements ActionListener
 	}
 
 
+
+	//Here is where all the events take place, the majority of them are onClick
 	public void actionPerformed(ActionEvent e)
 	{
 		String buttonString = e.getActionCommand();
@@ -974,7 +989,7 @@ public class Menu extends JFrame implements ActionListener
 			LoginFrame gui = new LoginFrame();
 			gui.setVisible(true);
 		}
-		else if (buttonString.equals("Create Class"))
+		else if (buttonString.equals("Create Class")) //if Create Class is clicked check the info in the boxes and create the class
 		{
 			try
 			{
@@ -991,7 +1006,7 @@ public class Menu extends JFrame implements ActionListener
 					createCErrorLbl.setText("Class Created");
 				}
 				else
-					createCErrorLbl.setText("Class NOT Created, Check teacherId");
+					createCErrorLbl.setText("Class NOT Created, Check teacherId"); //Meaningful Error Message
 
 			}
 			catch(Exception ex)
@@ -999,7 +1014,7 @@ public class Menu extends JFrame implements ActionListener
 				createCErrorLbl.setText("Incorrect Input");
 			}
 		}
-		else if (buttonString.equals("Create Account"))
+		else if (buttonString.equals("Create Account")) //Same way, check the info in hte boxes
 		{
 			Object selected = userList.getSelectedItem();
 			String combo = selected.toString();
@@ -1011,33 +1026,42 @@ public class Menu extends JFrame implements ActionListener
 				String name = nameTxt.getText();
 				String pass;
 
-				if (combo.equals("Admin"))
+				User tempUser = utility.openUser(id);
+
+				if(tempUser == null) //ensures that the user does not exist
 				{
-					pass = passTxt.getText();
-					Admin admin = new Admin(id, name, pass);
-					utility.writeAdmin(id, name, pass, 'a');
-					createAErrorLbl.setText("Admin Created");
-
-				}
-				else
-				{
-					pass = Long.toHexString(Double.doubleToLongBits(Math.random())); // Our Random pass generator*
-					pass = pass.substring(0, 8);
-
-					passTxt.setText(pass);
-
-					if (combo.equals("Teacher"))
+					if (combo.equals("Admin"))
 					{
-						Teacher teacher = new Teacher(id, name, pass);
-						utility.writeTeacher(id, name, pass, 't');
-						createAErrorLbl.setText("Teacher Created");
+						pass = passTxt.getText();
+						Admin admin = new Admin(id, name, pass);
+						utility.writeAdmin(id, name, pass, 'a');
+						createAErrorLbl.setText("Admin Created");
+
 					}
 					else
 					{
-						Student student = new Student(id, name, pass);
-						utility.writeStudent(id, name, pass, 's'); //Write student should change
-						createAErrorLbl.setText("Student Created");
+						pass = Long.toHexString(Double.doubleToLongBits(Math.random())); // Our Random pass generator*
+						pass = pass.substring(0, 8);
+
+						passTxt.setText(pass);
+
+						if (combo.equals("Teacher"))
+						{
+							Teacher teacher = new Teacher(id, name, pass);
+							utility.writeTeacher(id, name, pass, 't');
+							createAErrorLbl.setText("Teacher Created");
+						}
+						else
+						{
+							Student student = new Student(id, name, pass);
+							utility.writeStudent(id, name, pass, 's'); //Write student should change
+							createAErrorLbl.setText("Student Created");
+						}
 					}
+				}
+				else
+				{
+					createAErrorLbl.setText("That user already exists"); //If the id input exists, tell the user
 				}
 			}
 			catch (Exception ex)
@@ -1056,7 +1080,7 @@ public class Menu extends JFrame implements ActionListener
 						if(person != null)
 						{
 							utility.addClass(currClass.getId(), id);
-							createSErrorLbl.setText("Student Created");
+							createSErrorLbl.setText("Student Added");
 							studentTxt.setText("");
 						}
 						else
