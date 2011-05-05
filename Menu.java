@@ -47,6 +47,7 @@ public class Menu extends JFrame implements ActionListener
 	// Used for create Quiz
 	private JTextField qTitleTxt;
 	private JComboBox numList;
+	private JLabel qErrorLbl;
 
 	// Used for create Students
 	private JTextField studentTxt;
@@ -153,7 +154,7 @@ public class Menu extends JFrame implements ActionListener
 		}});
 	}
 
-	//Panel behind addStudent and Create Class
+	//Panel behind addStudent, Create Class, Create Quiz, and Create User
 	public JPanel create(String title)
 	{
 		JPanel createPanel = new JPanel();
@@ -447,6 +448,9 @@ public class Menu extends JFrame implements ActionListener
 			JLabel questionLbl = new JLabel("How many questions:");
 			createPanel.add(questionLbl);
 
+			qErrorLbl = new JLabel("");
+			createPanel.add(qErrorLbl);
+
 			int i = 1;
 			String [] num = new String[99];
 
@@ -502,6 +506,11 @@ public class Menu extends JFrame implements ActionListener
 			layout.putConstraint(SpringLayout.WEST, backBtn, (WIDTH-115), SpringLayout.WEST,
 				createPanel);
 			layout.putConstraint(SpringLayout.NORTH, backBtn, (HEIGHT-110), SpringLayout.NORTH,
+				createPanel);
+
+			layout.putConstraint(SpringLayout.SOUTH, qErrorLbl, 50, SpringLayout.SOUTH,
+				createPanel);
+			layout.putConstraint(SpringLayout.WEST, qErrorLbl, (((WIDTH/2/2)-50)), SpringLayout.WEST,
 				createPanel);
 		}
 
@@ -1104,15 +1113,23 @@ public class Menu extends JFrame implements ActionListener
 
 			Object selected = numList.getSelectedItem();
 			int num = Integer.parseInt(selected.toString());
-
-			int tempQuizId = Integer.parseInt(qTitleTxt.getText());
+			try
+			{
+				int tempQuizId = Integer.parseInt(qTitleTxt.getText());
+			}
+			catch(Exception except)
+			{
+				qErrorLbl.setText("Please Enter an Integer for Quiz Number");
+			}
 
 			dispose(); //destroys the current frame
 			QuizFrame q = new QuizFrame(tempQuizId, num, currClass, curr); // instanciates the selected quiz
 			q.setVisible(true); //shows new panel
 		}
 		else
-			System.out.println("Unexpected error.");
+		{
+			qErrorLbl.setText("Unexpected error.");
+		}
 	}
 
 	private void passwordChangeActionPerformed(ActionEvent event)

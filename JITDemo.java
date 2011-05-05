@@ -6,7 +6,7 @@
 * Authors:
 * Jeremy Parmenter
 * Alex Holguin
-* John Kein Canez
+* John Kevin Canez
 */
 
 import javax.swing.*;
